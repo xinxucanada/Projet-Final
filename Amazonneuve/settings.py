@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'gestion_vente',
+    'gestion_vente.apps.GestionVenteConfig',
 ]
 
 MIDDLEWARE = [
