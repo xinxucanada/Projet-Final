@@ -22,13 +22,13 @@ class CompteModelForm(forms.ModelForm):
 
 def compte_creer(request):
 
-    if request.method == "GET":
-        form = CompteModelForm()
-        return render(request, "compte_creer.html", {"form":form})
+    # if request.method == "GET":
+    #     form = CompteModelForm()
+    #     return render(request, "compte_creer.html", {"form":form})
 
-    form = CompteModelForm(data=request.POST)
-    if form.is_valid():
-        form.save()
-        return HttpResponse("Compte creer success")
-    else:
-        return render(request, "compte_creer.html", {"form":form})
+    # form = CompteModelForm(data=request.POST)
+    # if form.is_valid():
+    #     form.save()
+    #     return HttpResponse("Compte creer success")
+    # else:
+    #     return render(request, "compte_creer.html", {"form":form})
