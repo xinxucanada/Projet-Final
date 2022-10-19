@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compte Creer</title>
+</head>
+<body>
+    <h1>Creez votre compte</h1>
+    <div>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div >
+               <label >{{field.label}}</label>
+                {{field}}
+                <span style="color: red;">{{field.errors.0}}</span>
+              </div>
+              {% endfor %} 
+              <button type="submit" class="btn btn-primary">CREER</button>
+          </form>
+
+    </div>
+</body>
+</html>
