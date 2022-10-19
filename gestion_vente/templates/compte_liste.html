@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compte Creer</title>
+</head>
+<body>
+    <h1>Liste compte</h1>
+    <div>
+        <table>
+            {% for user in liste1 %}
+            <tr>
+                <td>{{ user.nomCompte }}</td>
+                <td>{{ user.telephone }} </td>
+                <td>{{ user.courriel }}</td>
+                <td>{{ user.dateNaissance }}</td>
+                <td>{{ user.gender }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h1>table2</h1>
+        <table>
+            {% for field in form %}
+            <div>{{field}}</div>
+            {% endfor %}
+        </table>
+
+    </div>
+</body>
+</html>

@@ -45,7 +45,7 @@ class Adresse(models.Model):
         ('NT', 'Territoires du Nord-Ouest'),
         ('YT', 'Yukon'),
     ]
-    province = models.CharField(verbose_name='province', max_length=2, choices=province_choix)
+    province = models.CharField(verbose_name='province', max_length=3, choices=province_choix)
 
     def __str__(self) -> str:
         return self.adresse + self.ville + self.province + self.codePostale
