@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 
 
 def home(request):
-    return HttpResponse("Hello, Django!")
+    return render(request, "home.html")
 # Create your views here.
 
 
