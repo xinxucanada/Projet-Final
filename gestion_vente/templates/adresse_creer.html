@@ -11,6 +11,7 @@
     <div>
         <form method="post" novalidate>
             {% csrf_token %}
+
             {% for field in form %}
             <div >
                <label >{{field.label}}</label>

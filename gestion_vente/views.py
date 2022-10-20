@@ -91,27 +91,29 @@ def compte_delete(request, nid):
 
 class AdresseModelForm(forms.ModelForm):
 
-    idCompte = forms.IntegerField(disabled=True, label="compte")
+    # idCompte = forms.IntegerField(disabled=True, label="compte")
 
     class Meta:
         model = models.Adresse
-        fields = [ 'idCompte', 'adresse', 'ville', 'codePostale', 'province']
+        fields = ('adresse', 'ville', 'codePostale', 'province',)
         
 
 
 def adresse_creer(request, nid):
 
-    adressTemp = models.Adresse.objects.create(idCompte=nid, adresse='n/a', ville='n/a', codePostale='X0X0X0',province="QC")
+    # adressTemp = models.Adresse.objects.create(idCompte=nid, adresse='n/a', ville='n/a', codePostale='X0X0X0',province="QC")
     
     if request.method == "GET":
-        form = AdresseModelForm(instance=adressTemp)
+        form = AdresseModelForm()
         # form = AdresseModelForm(idCompte=nid)
         return render(request, "adresse_creer.html", {"form":form})
 
     form = AdresseModelForm(data=request.POST)
     if form.is_valid():
         
-        form.save()
+        new_adresse = form.save(commit=False)
+        new_adresse.idCompte = nid
+        new_adresse.save()
         return HttpResponse("Adresse creer success")
     else:
         return render(request, "adresse_creer.html", {"form":form})
