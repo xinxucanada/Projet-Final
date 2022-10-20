@@ -118,5 +118,23 @@ def adresse_creer(request, nid):
     else:
         return render(request, "adresse_creer.html", {"form":form})
 
+class LoginModelForm(forms.ModelForm): 
+
+    class Meta:
+        model = models.CompteUser
+        fields = ["nomCompte", "telephone", "courriel", "motDePasse"]
+        widgets = {
+            "motDePasse": forms.PasswordInput(), 
+        }
+
+
+def compte_login(request):
+    if request.method == "GET":
+        form = LoginModelForm()
+        return render(request, 'compte_login.html', {"form":form})
+    form = LoginModelForm(data=request.POST)
     
+    print(request.POST["telephone"])
+    # print(form.__getattribute__('t'))
+    return redirect("home")
 

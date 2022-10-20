@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
+    bouvet/favicon/_/attachment/inline/dd170092-656a-4895-8550-daac0c4b0aa0:2df7625
+    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" >
+    <title>Se Connecter</title>
+    <style>
+        .login {
+            width: 300px;
+            height: 400px;
+            background-color: grey;
+            margin: 50px auto;
+        }
+    </style>
+  
+</head>
+<body>
+    <div class="login">
+        <!-- <form >
+            <h2>VOUS AVEZ DÉJÀ UN COMPTE?</h2>
+            <h4>*Nom du compte</h4>
+            <input type="text" name="">
+            <h4>*MOT DE PASSE</h4>
+            <input type="password"><br>
+            <input type="checkbox" checked="checked"> Retenir mes coordonnées
+            <input class="button" type="submit" value="OUVERTURE DE SESSION"><br><br>
+        </form> -->
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div >
+               <label >{{field.label}}</label>
+                {{field}}
+                <span style="color: red;">{{field.errors.0}}</span>
+              </div>
+              {% endfor %} 
+              <input type="submit" value="Conneter">
+          </form>
+        
+       
+    </div>
+</body>
+</html>
