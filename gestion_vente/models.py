@@ -7,7 +7,7 @@ from django.db import models
 
 class CompteUser(models.Model):
 
-    nomCompte = models.CharField(verbose_name='Nom Compte',max_length=20)
+    nomCompte = models.CharField(verbose_name='Nom Compte',max_length=20, unique=True)
     nom = models.CharField(verbose_name='Nom',  max_length=20)
     prenom = models.CharField(verbose_name='Prenom', max_length=20)
     telephone = models.CharField(verbose_name='Telephone', max_length=20)
@@ -65,7 +65,7 @@ class Produit(models.Model):
 
 class LignePanier(models.Model):
 
-    idCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="id",on_delete= models.CASCADE)
+    nomCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="nomCompte",on_delete= models.CASCADE)
     idProduit = models.ForeignKey(verbose_name='id produit',to="Produit", to_field="id",on_delete= models.CASCADE)
     prixUnitair = models.DecimalField(verbose_name="Prix Unitaire", max_digits=10, decimal_places=2, default=0)
     quantite = models.IntegerField(verbose_name="quantite")
@@ -73,7 +73,7 @@ class LignePanier(models.Model):
 
 class Commande(models.Model):
 
-    idCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="id",on_delete= models.CASCADE)
+    nomCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="nomCompte",on_delete= models.CASCADE)
     adresseLivre = models.CharField(verbose_name='ville', max_length=100)
     dateCommande = models.DateField(verbose_name='Date de commande', auto_now_add=True)
     motant = models.DecimalField(verbose_name="motant", max_digits=10, decimal_places=2)
@@ -83,7 +83,7 @@ class Commande(models.Model):
 
 class LigneCommande(models.Model):
 
-    commande = models.ForeignKey(verbose_name='id commande',to="Commande", to_field="id",on_delete= models.CASCADE)
+    idCommande = models.ForeignKey(verbose_name='id commande',to="Commande", to_field="id",on_delete= models.CASCADE)
     Produit = models.ForeignKey(verbose_name='produit',to="Produit", to_field="id",on_delete= models.CASCADE)
     prixUnitair = models.DecimalField(verbose_name="Prix Unitaire", max_digits=10, decimal_places=2, default=0)
     quantite = models.IntegerField(verbose_name="quantite")

@@ -1,12 +1,20 @@
+import re
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from gestion_vente import models
 from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from gestion_vente.magasin import Client, Magasin, Order
+
+m = Magasin()
 
 
 def home(request):
+    # nom = 'se connecter'
+    if m.client:
+        nom = "Bonjour " + m.client.compte.prenom + " " + m.client.compte.nom
+        return render(request, "home1.html", {"nom": nom})
     return render(request, "home.html")
 # Create your views here.
 
@@ -118,23 +126,41 @@ def adresse_creer(request, nid):
     else:
         return render(request, "adresse_creer.html", {"form":form})
 
-class LoginModelForm(forms.ModelForm): 
+# class LoginModelForm(forms.ModelForm): 
 
-    class Meta:
-        model = models.CompteUser
-        fields = ["nomCompte", "telephone", "courriel", "motDePasse"]
-        widgets = {
-            "motDePasse": forms.PasswordInput(), 
-        }
+#     class Meta:
+#         model = models.CompteUser
+#         fields = ["nomCompte", "telephone", "courriel", "motDePasse"]
+#         widgets = {
+#             "motDePasse": forms.PasswordInput(), 
+#         }
 
 
 def compte_login(request):
     if request.method == "GET":
-        form = LoginModelForm()
-        return render(request, 'compte_login.html', {"form":form})
-    form = LoginModelForm(data=request.POST)
+        return render(request, 'compte_login.html')
+    # form = LoginModelForm(data=request.POST)
+    data_login = request.POST.get('data_login')
+    if models.CompteUser.objects.filter(nomCompte=data_login).exists():
+        nom_compte = data_login
+    elif models.CompteUser.objects.filter(telephone=data_login).exists():
+        nom_compte = models.CompteUser.objects.filter(telephone=data_login).first().nomCompte
+    elif models.CompteUser.objects.filter(courriel=data_login).exists():
+        nom_compte = models.CompteUser.objects.filter(courriel=data_login).first().nomCompte
+    else:
+        msg_error = 'Compte n\'existe pas!!'
+        return render(request, 'compte_login.html', {"msg_error": msg_error})
+    pwd = request.POST.get('pwd') 
+    if pwd == models.CompteUser.objects.filter(nomCompte= nom_compte).first().motDePasse:
+        m.login(nom_compte)
+        return redirect('home')
+    else:
+        msg_error = 'Mot de pass incorrect!!'
+        return render(request, 'compte_login.html', {"msg_error": msg_error})
+
+
+def compte_deconnecter(request):
+    m.client = None
+    return redirect('home')
     
-    print(request.POST["telephone"])
-    # print(form.__getattribute__('t'))
-    return redirect("home")
 

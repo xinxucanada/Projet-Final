@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
+    bouvet/favicon/_/attachment/inline/dd170092-656a-4895-8550-daac0c4b0aa0:2df7625
+    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" >
+    <title>Amazonneuve</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        div.nav {
+            height: 50px;
+            background-color:rgba(80, 80, 80, 0.5);
+
+        }
+        .connecter {
+            float: right;
+            /* height: 50px; */
+            line-height: 50px;
+            /* width: 100px; */
+            font-size: 30px;
+            text-decoration: none;
+            color: white;
+            margin-right: 30px;
+            /* background-color: pink; */
+        }
+        li {
+            list-style: none;
+        }
+        .connecter  ul {
+            font-size: 20px;
+            display: none;
+            background-color: grey;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        .connecter span {
+            background-image: ;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+      
+        <ul class="connecter">
+           <li><span><img src="static/imgs/connexion.png" alt=""></span>{{ nom }}</li> 
+           <ul>
+            <li><a href="">profile</a></li>
+            <li><a href="">mes commandes</a></li>
+            <li><a href="compte/deconnecter/">déconnection</a></li>
+           </ul>
+        </ul>
+
+    </div>
+    <h1>Bienvenue</h1>
+
+    <script>
+        let connecter = document.querySelector(".connecter");
+        let ul = connecter.querySelector("ul");
+        connecter.onmouseover = function(){
+            ul.style.display = 'block';
+        }
+        connecter.onmouseout = function(){
+            ul.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
