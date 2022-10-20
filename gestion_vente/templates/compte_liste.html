@@ -16,7 +16,8 @@
                 <td>{{ user.telephone }} </td>
                 <td>{{ user.courriel }}</td>
                 <td>{{ user.dateNaissance }}</td>
-                <td>{{ user.gender }}</td>
+                <td>{{ user.get_gender_display }}</td>
+                <td>{{ user.motDePasse }}</td>
                 <td><a href="/compte/{{ user.id }}/delete">delete</a></td>
             </tr>
             {% endfor %}
