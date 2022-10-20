@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from gestion_vente import models
 from django import forms
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 
 
 def home(request):
@@ -12,6 +14,11 @@ def home(request):
 class CompteModelForm(forms.ModelForm):
 
     nomCompte = forms.CharField(min_length=4, label="Nom Compte")
+    telephone = forms.CharField(
+        label = "telephone",
+        validators = [RegexValidator(r'^\d{10}$', 'telephone invalide')]
+    )
+    
 
     class Meta:
         model = models.CompteUser
@@ -19,13 +26,44 @@ class CompteModelForm(forms.ModelForm):
         widgets = {
             "motDePasse": forms.PasswordInput(), 
         }
+        
+    
+    def clean_telephone(self):
+        txt_telephone = self.cleaned_data["telephone"]
+        exists = models.CompteUser.objects.filter(telephone=txt_telephone).exists()
+        if exists:
+            raise ValidationError("Numero de telephone deja existe")
+
+        return txt_telephone
+
+    def clean_nomCompte(self):
+        txt_nomCompte = self.cleaned_data["nomCompte"]
+        exists = models.CompteUser.objects.filter(nomCompte=txt_nomCompte).exists()
+        if exists:
+            raise ValidationError("Nom du compte deja existe")
+
+        return txt_nomCompte
+
+    def clean_courriel(self):
+        txt_courriel = self.cleaned_data["courriel"]
+        exists = models.CompteUser.objects.filter(courriel=txt_courriel).exists()
+        if exists:
+            raise ValidationError("courriel deja existe")
+
+        return txt_courriel
+ 
+    def clean_motDePasse(self):
+        txt_motDePasse = self.cleaned_data["motDePasse"]
+        if len(txt_motDePasse) < 8:
+            raise ValidationError("mot de passe doit avoir plus que 8 chars")
+
+        return txt_motDePasse
+    
+
 
 
 def compte_creer(request):
 
-    # models.CompteUser.objects.create(nomCompte='XX001', nom='Xu', prenom='Xin', telephone='5141234567', courriel='fjsd@cmail.com', motDePasse='montreal2022',dateNaissance='1985-5-9', gender=2)
-    # models.CompteUser.objects.create(nomCompte='XX002', nom='Legault', prenom='Francois', telephone='5149876543', courriel='abc@cmail.com', motDePasse='quebec6789',dateNaissance='1950-5-29', gender=1)
-    # return HttpResponse("Compte creer success")
     if request.method == "GET":
         form = CompteModelForm()
         return render(request, "compte_creer.html", {"form":form})
@@ -46,23 +84,33 @@ def compte_liste(request):
 
     return render(request, "compte_liste.html", {"liste1":liste1, 'form': form})
 
+def compte_delete(request, nid):
+    models.CompteUser.objects.filter(id=nid).delete()
+    return redirect("/compte/liste")
+
 
 class AdresseModelForm(forms.ModelForm):
 
+    idCompte = forms.IntegerField(disabled=True, label="compte")
+
     class Meta:
         model = models.Adresse
-        fields = ['idCompte', 'adresse', 'ville', 'codePostale', 'province']
+        fields = [ 'idCompte', 'adresse', 'ville', 'codePostale', 'province']
         
 
 
 def adresse_creer(request, nid):
+
+    adressTemp = models.Adresse.objects.create(idCompte=nid, adresse='n/a', ville='n/a', codePostale='X0X0X0',province="QC")
     
     if request.method == "GET":
-        form = AdresseModelForm()
+        form = AdresseModelForm(instance=adressTemp)
+        # form = AdresseModelForm(idCompte=nid)
         return render(request, "adresse_creer.html", {"form":form})
 
     form = AdresseModelForm(data=request.POST)
     if form.is_valid():
+        
         form.save()
         return HttpResponse("Adresse creer success")
     else:

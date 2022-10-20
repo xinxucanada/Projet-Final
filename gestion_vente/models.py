@@ -26,7 +26,7 @@ class CompteUser(models.Model):
 
 class Adresse(models.Model):
 
-    idCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="id",on_delete= models.CASCADE)
+    idCompte = models.IntegerField(verbose_name='id compte')
     adresse = models.CharField(verbose_name='adresse', max_length=50)
     ville = models.CharField(verbose_name='ville', max_length=20)
     codePostale = models.CharField(verbose_name='code postale', max_length=7)

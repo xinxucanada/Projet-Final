@@ -17,15 +17,38 @@
                 <td>{{ user.courriel }}</td>
                 <td>{{ user.dateNaissance }}</td>
                 <td>{{ user.gender }}</td>
+                <td><a href="/compte/{{ user.id }}/delete">delete</a></td>
             </tr>
             {% endfor %}
         </table>
-        <h1>table2</h1>
+        <!-- <h1>table2</h1>
         <table>
             {% for field in form %}
             <div>{{field}}</div>
             {% endfor %}
         </table>
+
+    </div> -->
+    <h1>
+        ta 2
+    </h1>
+    <div>
+        <table>
+            {% for user in liste1 %}
+            <tr>
+                {% for v in user.values %}
+                <td>{{ v }}</td>
+                {% endfor %}
+                
+            </tr>
+            {% endfor %}
+        </table>
+        <!-- <h1>table2</h1>
+        <table>
+            {% for field in form %}
+            <div>{{field}}</div>
+            {% endfor %}
+        </table> -->
 
     </div>
 </body>
