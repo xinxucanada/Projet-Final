@@ -67,7 +67,7 @@ class LignePanier(models.Model):
 
     nomCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="nomCompte",on_delete= models.CASCADE)
     idProduit = models.ForeignKey(verbose_name='id produit',to="Produit", to_field="id",on_delete= models.CASCADE)
-    prixUnitair = models.DecimalField(verbose_name="Prix Unitaire", max_digits=10, decimal_places=2, default=0)
+    # prixUnitair = models.DecimalField(verbose_name="Prix Unitaire", max_digits=10, decimal_places=2, default=0)
     quantite = models.IntegerField(verbose_name="quantite")
 
 

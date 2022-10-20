@@ -18,7 +18,7 @@
             background-color:rgba(80, 80, 80, 0.5);
 
         }
-        .connecter {
+        .connecter, .panier {
             float: right;
             /* height: 50px; */
             line-height: 50px;
@@ -41,16 +41,19 @@
             color: white;
             text-decoration: none;
         }
-        .connecter span {
-            background-image: ;
+        .connecter img {
+            height: 20px;
         }
     </style>
 </head>
 <body>
     <div class="nav">
-      
+        <span class="panier">
+            panier
+        </span>
         <ul class="connecter">
            <li><span><img src="static/imgs/connexion.png" alt=""></span>{{ nom }}</li> 
+           <!-- <li><span></span>{{ nom }}</li>  -->
            <ul>
             <li><a href="">profile</a></li>
             <li><a href="">mes commandes</a></li>

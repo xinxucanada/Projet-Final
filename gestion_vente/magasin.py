@@ -25,6 +25,19 @@ class Magasin:
 
     def __init__(self): 
         self.client = None
+        self.panier = Panier()
 
     def login(self, nom_compte):
         self.client = Client(nom_compte)
+
+
+class Panier:
+    
+    def __init__(self) -> None:
+        self.choses = {}
+
+    def ajouter(self, produit):
+        if produit.id in self.choses.keys():
+            self.choses[produit.id] += produit.quantite
+        else:
+            self.choses[produit.id] = produit.quantite
