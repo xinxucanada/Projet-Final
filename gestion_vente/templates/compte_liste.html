@@ -7,12 +7,15 @@
     <title>Liste compte</title>
 </head>
 <body>
+
     <h1>Liste compte</h1>
     <div>
         <table>
             {% for user in liste1 %}
             <tr>
                 <td>{{ user.nomCompte }}</td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
                 <td>{{ user.telephone }} </td>
                 <td>{{ user.courriel }}</td>
                 <td>{{ user.dateNaissance }}</td>
@@ -22,34 +25,6 @@
             </tr>
             {% endfor %}
         </table>
-        <!-- <h1>table2</h1>
-        <table>
-            {% for field in form %}
-            <div>{{field}}</div>
-            {% endfor %}
-        </table>
-
-    </div> -->
-    <h1>
-        ta 2
-    </h1>
-    <div>
-        <table>
-            {% for user in liste1 %}
-            <tr>
-                {% for v in user.values %}
-                <td>{{ v }}</td>
-                {% endfor %}
-                
-            </tr>
-            {% endfor %}
-        </table>
-        <!-- <h1>table2</h1>
-        <table>
-            {% for field in form %}
-            <div>{{field}}</div>
-            {% endfor %}
-        </table> -->
 
     </div>
 </body>

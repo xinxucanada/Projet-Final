@@ -31,13 +31,34 @@ class Magasin:
         self.client = Client(nom_compte)
 
 
+class Produit_chose:
+
+    def __init__(self,id, qty) -> None:
+        self.id = id
+        self.qty = qty
+
+    def __str__(self) -> str:
+        return f"{self.id},{self.qty}"
+
 class Panier:
     
     def __init__(self) -> None:
+        self.idClient = None
         self.choses = {}
 
-    def ajouter(self, produit):
+    def ajouter(self, produit, id=None):
+        self.idClient = id
         if produit.id in self.choses.keys():
-            self.choses[produit.id] += produit.quantite
+            self.choses[produit.id] += produit.qty
         else:
-            self.choses[produit.id] = produit.quantite
+            self.choses[produit.id] = produit.qty
+
+    def __add__(self, other):
+        # p.idClient = self.idClient
+        for k, v in other.choses.items():
+            if k in self.choses.keys():
+                self.choses[k] += v
+            else:
+                self.choses[k] = v
+        other.choses = {}
+        

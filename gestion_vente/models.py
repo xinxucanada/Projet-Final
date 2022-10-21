@@ -1,5 +1,7 @@
+from email.policy import default
 from operator import mod
 from random import choices
+from statistics import mode
 from tabnanny import verbose
 from django.db import models
 
@@ -53,13 +55,22 @@ class Adresse(models.Model):
 class Produit(models.Model):
 
     nomProduit = models.CharField(verbose_name='Nom du Produit', max_length=20)
+    typeProduit = models.CharField(verbose_name='type du produit', max_length=20, default="produit")
     prixUnitair = models.DecimalField(verbose_name="Prix Unitaire", max_digits=10, decimal_places=2, default=0)
-    inventaire = models.IntegerField(verbose_name="quantite",default=0)
-    dateLimite = models.DateField(verbose_name="quantite",default='9999-12-31')
-    numLot = models.CharField(verbose_name='numero de lot', max_length=20)
+    # inventaire = models.IntegerField(verbose_name="quantite",default=0)
+    # dateLimite = models.DateField(verbose_name="quantite",default='9999-12-31')
+    # numLot = models.CharField(verbose_name='numero de lot', max_length=20)
+    lienPhoto = models.CharField(verbose_name='lien photo', max_length=100, default="")
 
     def __str__(self) -> str:
         return self.nomProduit
+
+class Inventaire(models.Model):
+
+    idProduit = models.ForeignKey(verbose_name="id produit", to='Produit', to_field="id", on_delete=models.CASCADE)
+    inventaire = models.IntegerField(verbose_name="quantite",default=0)
+    dateLimite = models.DateField(verbose_name="quantite",default='9999-12-31')
+    numLot = models.CharField(verbose_name='numero de lot', max_length=20)
 
 
 

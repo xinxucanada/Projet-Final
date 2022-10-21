@@ -9,4 +9,7 @@ urlpatterns = [
     path("compte/deconnecter/", views.compte_deconnecter, name="compte_deconnecter"),
     path("compte/<int:nid>/delete", views.compte_delete, name="compte_delete"),
     path("adresse/<int:nid>/creer/", views.adresse_creer, name="adresse_creer"),
+    path("produit/<int:nid>/delete/", views.produit_delete, name="produit_delete"),
+    path("produit/<int:nid>/edite/", views.produit_edite, name="produit_edite"),
+    path("produit/liste/", views.produit_liste, name="produit_liste"),
 ]

@@ -1,3 +1,4 @@
+from ast import Delete
 import re
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -6,16 +7,19 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from gestion_vente.magasin import Client, Magasin, Order
+from django.utils.safestring import mark_safe
 
 m = Magasin()
 
 
 def home(request):
-    # nom = 'se connecter'
+    nom = '<a href="compte/login/">se connecter</a>'
     if m.client:
-        nom = "Bonjour " + m.client.compte.prenom + " " + m.client.compte.nom
-        return render(request, "home1.html", {"nom": nom})
-    return render(request, "home.html")
+        nom = f'<img src="static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
+            <li><a href="">profile</a></li><li><a href="">mes commandes</a></li>\
+            <li><a href="compte/deconnecter/">déconnection</a></li></ul></ul>'
+    nom = mark_safe(nom)   
+    return render(request, "home1.html", {"nom": nom})
 # Create your views here.
 
 
@@ -85,7 +89,8 @@ def compte_creer(request):
 
 
 def compte_liste(request):
-
+    #models.CompteUser.objects.create(nomCompte="example",nom="Bone", prenom="James", telephone="1237894650",courriel="example@gogoe.com",motDePasse="123456", dateNaissance="1985-10-1",gender=1)
+    
     liste1 = models.CompteUser.objects.all()
     row = models.CompteUser.objects.filter(id=1).first()
     form = CompteModelForm(instance=row)
@@ -162,5 +167,75 @@ def compte_login(request):
 def compte_deconnecter(request):
     m.client = None
     return redirect('home')
-    
 
+
+def produit_liste(request):
+    # models.Produit.objects.all().delete()
+    #models.Produit.objects.create(typeProduit="fruit legume",nomProduit="Pomme Vert 500g", prixUnitair=2.99,lienPhoto="/static/imgs/connexion.png")
+    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="ail 200g", prixUnitair=0.99,lienPhoto="/static/imgs/ail.jpg") 
+
+    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="banane 2000g", prixUnitair=3.99,lienPhoto="/static/imgs/banane.jpg") 
+
+    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="ciboulette 200g", prixUnitair=1.99,lienPhoto="/static/imgs/ciboulette.jpg") 
+
+    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="laitue 500g", prixUnitair=1.99,lienPhoto="/static/imgs/laitue.jpg") 
+
+    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="oignon 2000g", prixUnitair=3.99,lienPhoto="/static/imgs/oignon.jpg") 
+
+    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="patate 2000g", prixUnitair=2.99,lienPhoto="/static/imgs/patate.jpg") 
+
+    # models.Produit.objects.create(typeProduit="pain",nomProduit="bagel 450g", prixUnitair=1.99,lienPhoto="/static/imgs/bagel.jpg") 
+
+    # models.Produit.objects.create(typeProduit="pain",nomProduit="pain 675g", prixUnitair=2.55,lienPhoto="/static/imgs/pain.jpg") 
+
+    # models.Produit.objects.create(typeProduit="pain",nomProduit="tortillas 1000g", prixUnitair=4.55,lienPhoto="/static/imgs/tortillas.jpg") 
+
+    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="beurre 600g", prixUnitair=4.99,lienPhoto="/static/imgs/beurre.jpg") 
+
+    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="creme 600g", prixUnitair=3.99,lienPhoto="/static/imgs/creme.jpg") 
+
+    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="fromage 450g", prixUnitair=5.99,lienPhoto="/static/imgs/fromage.jpg") 
+
+    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="oeufs 30", prixUnitair=7.99,lienPhoto="/static/imgs/oeufs.jpg") 
+
+    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="pecorino 400g", prixUnitair=6.99,lienPhoto="/static/imgs/pecorino.jpg") 
+
+    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="dumpling 1000g", prixUnitair=9.99,lienPhoto="/static/imgs/dumpling.jpg") 
+
+    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="glace_chocolat 500g", prixUnitair=3.99,lienPhoto="/static/imgs/glace_chocolat.jpg") 
+
+    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="glace_vanille 500g", prixUnitair=3.99,lienPhoto="/static/imgs/glace_vanille.jpg") 
+
+    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="pizza 600g", prixUnitair=10.99,lienPhoto="/static/imgs/pizza.jpg") 
+
+    # models.Produit.objects.create(typeProduit="viande",nomProduit="boeuf 1000g", prixUnitair=8.99,lienPhoto="/static/imgs/boeuf.jpg") 
+
+    # models.Produit.objects.create(typeProduit="viande",nomProduit="porc 1000g", prixUnitair=4.99,lienPhoto="/static/imgs/porc.jpg") 
+
+    # models.Produit.objects.create(typeProduit="viande",nomProduit="poulet 1500g", prixUnitair=9.99,lienPhoto="/static/imgs/poulet.jpg") 
+
+    # models.Produit.objects.create(typeProduit="autres",nomProduit="chocolat", prixUnitair=2.99,lienPhoto="/static/imgs/chocolat.jpg") 
+
+    # models.Produit.objects.create(typeProduit="autres",nomProduit="pate_rigatoni 1000g", prixUnitair=1.99,lienPhoto="/static/imgs/pate_rigatoni.jpg") 
+
+    # models.Produit.objects.create(typeProduit="autres",nomProduit="poivre 200g", prixUnitair=3.99,lienPhoto="/static/imgs/poivre.jpg") 
+
+    # models.Produit.objects.create(typeProduit="autres",nomProduit="sel 500g", prixUnitair=0.99,lienPhoto="/static/imgs/sel.jpg") 
+
+    # models.Produit.objects.create(typeProduit="autres",nomProduit="sucre_glace 300g", prixUnitair=2.99,lienPhoto="/static/imgs/sucre_glace.jpg") 
+    
+    listeProduit = models.Produit.objects.all()
+    return render(request, "produit_liste.html", {"listeProduit":listeProduit} )
+
+def produit_delete(request,nid):
+    models.Produit.objects.filter(id=nid).delete()
+    return redirect("/produit/liste")
+
+class produitModelForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Produit
+        fields = "__all__"
+        
+def produit_edite(request,nid):
+    pass
