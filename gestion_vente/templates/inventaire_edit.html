@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire Edit</title>
+</head>
+<body>
+   
+        <h1>Inventaire Edit</h1>
+        
+        <div >
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                <div >
+                   <label for="">{{field.label}}</label>
+                    {{field}}
+                    <span style="color: red;">{{field.errors.0}}</span>
+                  </div>
+                  {% endfor %} 
+                  <button type="submit" >confirmer</button>
+              </form>
+        </div>
+      
+</body>
+</html>

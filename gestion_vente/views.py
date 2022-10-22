@@ -171,63 +171,11 @@ def compte_deconnecter(request):
 
 def produit_liste(request):
     # models.Produit.objects.all().delete()
-    #models.Produit.objects.create(typeProduit="fruit legume",nomProduit="Pomme Vert 500g", prixUnitair=2.99,lienPhoto="/static/imgs/connexion.png")
-    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="ail 200g", prixUnitair=0.99,lienPhoto="/static/imgs/ail.jpg") 
-
-    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="banane 2000g", prixUnitair=3.99,lienPhoto="/static/imgs/banane.jpg") 
-
-    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="ciboulette 200g", prixUnitair=1.99,lienPhoto="/static/imgs/ciboulette.jpg") 
-
-    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="laitue 500g", prixUnitair=1.99,lienPhoto="/static/imgs/laitue.jpg") 
-
-    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="oignon 2000g", prixUnitair=3.99,lienPhoto="/static/imgs/oignon.jpg") 
-
-    # models.Produit.objects.create(typeProduit="fruit legume",nomProduit="patate 2000g", prixUnitair=2.99,lienPhoto="/static/imgs/patate.jpg") 
-
-    # models.Produit.objects.create(typeProduit="pain",nomProduit="bagel 450g", prixUnitair=1.99,lienPhoto="/static/imgs/bagel.jpg") 
-
-    # models.Produit.objects.create(typeProduit="pain",nomProduit="pain 675g", prixUnitair=2.55,lienPhoto="/static/imgs/pain.jpg") 
-
-    # models.Produit.objects.create(typeProduit="pain",nomProduit="tortillas 1000g", prixUnitair=4.55,lienPhoto="/static/imgs/tortillas.jpg") 
-
-    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="beurre 600g", prixUnitair=4.99,lienPhoto="/static/imgs/beurre.jpg") 
-
-    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="creme 600g", prixUnitair=3.99,lienPhoto="/static/imgs/creme.jpg") 
-
-    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="fromage 450g", prixUnitair=5.99,lienPhoto="/static/imgs/fromage.jpg") 
-
-    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="oeufs 30", prixUnitair=7.99,lienPhoto="/static/imgs/oeufs.jpg") 
-
-    # models.Produit.objects.create(typeProduit="produit laitier et oeufs",nomProduit="pecorino 400g", prixUnitair=6.99,lienPhoto="/static/imgs/pecorino.jpg") 
-
-    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="dumpling 1000g", prixUnitair=9.99,lienPhoto="/static/imgs/dumpling.jpg") 
-
-    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="glace_chocolat 500g", prixUnitair=3.99,lienPhoto="/static/imgs/glace_chocolat.jpg") 
-
-    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="glace_vanille 500g", prixUnitair=3.99,lienPhoto="/static/imgs/glace_vanille.jpg") 
-
-    # models.Produit.objects.create(typeProduit="surgelés",nomProduit="pizza 600g", prixUnitair=10.99,lienPhoto="/static/imgs/pizza.jpg") 
-
-    # models.Produit.objects.create(typeProduit="viande",nomProduit="boeuf 1000g", prixUnitair=8.99,lienPhoto="/static/imgs/boeuf.jpg") 
-
-    # models.Produit.objects.create(typeProduit="viande",nomProduit="porc 1000g", prixUnitair=4.99,lienPhoto="/static/imgs/porc.jpg") 
-
-    # models.Produit.objects.create(typeProduit="viande",nomProduit="poulet 1500g", prixUnitair=9.99,lienPhoto="/static/imgs/poulet.jpg") 
-
-    # models.Produit.objects.create(typeProduit="autres",nomProduit="chocolat", prixUnitair=2.99,lienPhoto="/static/imgs/chocolat.jpg") 
-
-    # models.Produit.objects.create(typeProduit="autres",nomProduit="pate_rigatoni 1000g", prixUnitair=1.99,lienPhoto="/static/imgs/pate_rigatoni.jpg") 
-
-    # models.Produit.objects.create(typeProduit="autres",nomProduit="poivre 200g", prixUnitair=3.99,lienPhoto="/static/imgs/poivre.jpg") 
-
-    # models.Produit.objects.create(typeProduit="autres",nomProduit="sel 500g", prixUnitair=0.99,lienPhoto="/static/imgs/sel.jpg") 
-
-    # models.Produit.objects.create(typeProduit="autres",nomProduit="sucre_glace 300g", prixUnitair=2.99,lienPhoto="/static/imgs/sucre_glace.jpg") 
     
     listeProduit = models.Produit.objects.all()
     return render(request, "produit_liste.html", {"listeProduit":listeProduit} )
 
-def produit_delete(request,nid):
+def produit_delete(request, nid):
     models.Produit.objects.filter(id=nid).delete()
     return redirect("/produit/liste")
 
@@ -237,5 +185,49 @@ class produitModelForm(forms.ModelForm):
         model = models.Produit
         fields = "__all__"
         
-def produit_edite(request,nid):
-    pass
+def produit_edit(request, nid):
+
+    row_obj = models.Produit.objects.filter(id=nid).first()
+    if request.method == "GET":
+        form = produitModelForm(instance=row_obj)
+        return render(request, "produit_edit.html", {"form": form})
+    
+    form = produitModelForm(data=request.POST, instance=row_obj) 
+    if form.is_valid():
+        form.save()
+        return redirect("/produit/liste/")
+    else:
+        # print(form.errors)
+        return render(request, "produit_edit.html", {"form":form})
+
+def inventaire_liste(request):
+     
+    # models.Inventaire.objects.create(idProduit_id=138, inventaire=90, dateLimite="2023-12-12", numLot="AH242357") 
+
+    inventaires = models.Inventaire.objects.all().order_by("dateLimite").order_by("idProduit")
+
+    return render(request, "inventaire_liste.html", {"liste":inventaires} )
+
+def inventaire_delete(request, nid):
+    models.Inventaire.objects.filter(id=nid).delete()
+    return redirect("/inventaire/liste")
+
+class inventaireModelForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Inventaire
+        fields = "__all__"
+
+def inventaire_edit(request, nid):
+    row_obj = models.Inventaire.objects.filter(id=nid).first()
+    if request.method == "GET":
+        form = inventaireModelForm(instance=row_obj)
+        return render(request, "inventaire_edit.html", {"form": form})
+    
+    form = inventaireModelForm(data=request.POST, instance=row_obj) 
+    if form.is_valid():
+        form.save()
+        return redirect("/inventaire/liste/")
+    else:
+        # print(form.errors)
+        return render(request, "inventaire_edit.html", {"form":form})

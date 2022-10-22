@@ -67,10 +67,10 @@ class Produit(models.Model):
 
 class Inventaire(models.Model):
 
-    idProduit = models.ForeignKey(verbose_name="id produit", to='Produit', to_field="id", on_delete=models.CASCADE)
+    idProduit = models.ForeignKey(verbose_name="id produit", to="Produit", to_field="id", on_delete=models.CASCADE)
     inventaire = models.IntegerField(verbose_name="quantite",default=0)
-    dateLimite = models.DateField(verbose_name="quantite",default='9999-12-31')
-    numLot = models.CharField(verbose_name='numero de lot', max_length=20)
+    dateLimite = models.DateField(verbose_name="date peremption",default='9999-12-31', null=True, blank=True)
+    numLot = models.CharField(verbose_name='numero de lot', max_length=20, null=True, blank=True)
 
 
 

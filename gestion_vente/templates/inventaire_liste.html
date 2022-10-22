@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire Liste</title>
+</head>
+<body>
+    <h1>Inventaire Liste</h1>
+    <table>
+        <thead>
+            <th>ID</th>
+            <th>produit</th>
+            <th>quantite en stock</th>
+            <th>date peremption</th>
+            <th>num de lot</th>
+            <th>modifier</th>
+        </thead>
+        <tbody>
+            {% for obj in liste %}
+            <tr>
+                <td>{{ obj.id }}</td>
+                <td>{{ obj.idProduit }}</td>
+                <td>{{ obj.inventaire }}</td>
+                <td>{{ obj.dateLimite }}</td>
+                <td>{{ obj.numLot }}</td>
+                <td>
+                    <a href="/inventaire/{{ obj.id }}/delete/">delete</a>
+                    <a href="/inventaire/{{ obj.id }}/edit/">edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
