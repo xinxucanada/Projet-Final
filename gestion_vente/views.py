@@ -12,14 +12,17 @@ from django.utils.safestring import mark_safe
 
 m = Magasin()
 
-
-def home(request):
+def get_nom():
     nom = '<a href="compte/login/">se connecter</a>'
     if m.client:
         nom = f'<img src="static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
             <li><a href="">profile</a></li><li><a href="">mes commandes</a></li>\
-            <li><a href="compte/deconnecter/">déconnection</a></li></ul></ul>'
-    nom = mark_safe(nom)   
+            <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
+    nom = mark_safe(nom)
+    return nom   
+
+def home(request):
+    nom = get_nom()
     return render(request, "home1.html", {"nom": nom})
 # Create your views here.
 
@@ -239,13 +242,10 @@ def liste_ligne_panier(request):
     return render(request, "liste_panier.html", {"liste": liste})
 
 def compte_panier(request):
-    print(m.client)
-    print(type(m.client))
-    print(m.client.panier)
-    print(m.client.panier.choses)
+    nom = get_nom()
     liste = m.client.panier.choses
    
-    return render(request, "compte_panier.html", {"liste": liste})
+    return render(request, "compte_panier.html", {"liste": liste, "nom": nom})
 
 def shopping(request):
     nom = '<a href="/compte/login/">se connecter</a>'
@@ -259,14 +259,18 @@ def shopping(request):
         return render(request, "shopping.html", {"liste": liste, "nom":nom})
     # for i in range(liste.first().id, liste.last().id + 1):
     for i in range(113, 139):
-        qty = int(request.POST.get(str(i)))
+        if request.POST.get(str(i)):
+            qty = int(request.POST.get(str(i)))
         # qty = int(request.POST.get(i))
-        if qty != 0:
+        # if qty != 0:
             produit_select = Produit_chose(i, qty)
             print(produit_select)
             print(m.client)
             print(m.client.panier)
             m.client.panier.ajouter(produit_select)
+            models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
+            m.client.panier.save()
+
             return redirect("shopping")
 
     

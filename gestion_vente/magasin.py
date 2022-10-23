@@ -29,6 +29,10 @@ class Panier:
             else:
                 self.choses[k] = v
         other.choses = {}
+
+    def save(self):
+        for k, v in self.choses.items():
+            models.LignePanier.objects.create(nomCompte_id=self.nom_compte, idProduit_id=k, quantite=v)
         
 
 class Order:
@@ -42,7 +46,8 @@ class Client:
 
     def __init__(self, nom_compte):
         
-        self.compte = models.CompteUser.objects.filter(nomCompte=nom_compte).first()
+        # self.compte = models.CompteUser.objects.filter(nomCompte=nom_compte).first()
+        self.compte = nom_compte
         self.panier = Panier(nom_compte)
         self.orders = []
         if models.LignePanier.objects.filter(nomCompte=nom_compte).exists():
@@ -52,7 +57,7 @@ class Client:
             for i in models.Commande.objects.filter(nomCompte=nom_compte):
                 self.orders.append(Order(i.id))
     def __str__(self) -> str:
-        return self.compte.nom + self.compte.prenom
+        return self.compte
 
 class Magasin:
 
