@@ -13,9 +13,9 @@ from django.utils.safestring import mark_safe
 m = Magasin()
 
 def get_nom():
-    nom = '<a href="compte/login/">se connecter</a>'
+    nom = '<a href="/compte/login/">se connecter</a>'
     if m.client:
-        nom = f'<img src="static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
+        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
             <li><a href="">profile</a></li><li><a href="">mes commandes</a></li>\
             <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
     nom = mark_safe(nom)
@@ -241,32 +241,64 @@ def liste_ligne_panier(request):
     liste = models.LignePanier.objects.all()
     return render(request, "liste_panier.html", {"liste": liste})
 
+class LignePanierModelForm(forms.ModelForm):
+    idProduit_id = forms.IntegerField(disabled=True, label='Produit')
+    class Meta:
+        model = models.LignePanier
+        fields = ("idProduit_id", "quantite")
+
 def compte_panier(request):
     nom = get_nom()
-    liste = m.client.panier.choses
+    liste = models.LignePanier.objects.filter(nomCompte=m.client.compte)
+    print(liste)
+    for obj in liste:
+        print(obj)
+        print(obj.quantite)
+        print(obj.idProduit)
+    if request.method == "GET":
+        return render(request, "compte_panier.html", {"liste": liste, "nom": nom})
+    # for chaque in liste:
+    #     form = LignePanierModelForm(data=request.POST, instance=chaque)
+    #     if form.is_valid():
+    #         new_form = form.save(commit=False)
+    #         new_form.nomCompte = m.client.compte
+    #         new_form.save()
+    #         return redirect("/compte/panier")
+
+'''
+        new_adresse = form.save(commit=False)
+        new_adresse.idCompte = nid
+        new_adresse.save()
+    if request.method == "GET":
+        form = NumEditModelForm(instance=row_obj)
+        return render(request, "num_edit.html", {"form": form})
+    
+    form = NumEditModelForm(data=request.POST, instance=row_obj) #instance 是数据库里取得旧数据,data是post过来的新数据
+    if form.is_valid():
+        form.save()
+        return redirect("/num/list/")
+    else:
+        # print(form.errors)
+        return render(request, "num_edit.html", {"form":form})
+'''
    
-    return render(request, "compte_panier.html", {"liste": liste, "nom": nom})
+    
 
 def shopping(request):
-    nom = '<a href="/compte/login/">se connecter</a>'
-    if m.client:
-        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
-            <li><a href="">profile</a></li><li><a href="">mes commandes</a></li>\
-            <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
-    nom = mark_safe(nom)   
+    nom = get_nom()   
     liste = models.Produit.objects.all()
     if request.method == "GET":
         return render(request, "shopping.html", {"liste": liste, "nom":nom})
-    # for i in range(liste.first().id, liste.last().id + 1):
-    for i in range(113, 139):
+    for i in range(liste.first().id, liste.last().id + 1):
+    # for i in range(113, 139):
         if request.POST.get(str(i)):
             qty = int(request.POST.get(str(i)))
         # qty = int(request.POST.get(i))
         # if qty != 0:
             produit_select = Produit_chose(i, qty)
-            print(produit_select)
-            print(m.client)
-            print(m.client.panier)
+            # print(produit_select)
+            # print(m.client)
+            # print(m.client.panier)
             m.client.panier.ajouter(produit_select)
             models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
             m.client.panier.save()

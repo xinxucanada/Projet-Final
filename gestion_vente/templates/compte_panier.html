@@ -60,23 +60,29 @@
             <th>qty</th>
         </thead>
         <tbody>
-            {% for k, v in liste.items %}
+            <form action="" method="post"></form>
+            {% for obj in liste %}
             <tr>
-                <td>{{ k }}</td>
-                <td>{{ v }}</td>
+                <td>{{ obj.idProduit }}</td>
+                <td><input type="number" value="{{ obj.quantite }}" name="{{ obj.id }}"></td>
             </tr>
             {% endfor %}
-            <script>
-                let connecter = document.querySelector(".connecter");
-                let ul = connecter.querySelector("ul");
-                connecter.onmouseover = function(){
-                    ul.style.display = 'block';
-                }
-                connecter.onmouseout = function(){
-                    ul.style.display = 'none';
-                }
-            </script>
+            <tr>
+                <th colspan="2"><input type="submit" value="commander"></th>
+            </tr>
         </tbody>
+        
+
     </table>
+    <script>
+        let connecter = document.querySelector(".connecter");
+        let ul = connecter.querySelector("ul");
+        connecter.onmouseover = function(){
+            ul.style.display = 'block';
+        }
+        connecter.onmouseout = function(){
+            ul.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
