@@ -4,14 +4,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
-    bouvet/favicon/_/attachment/inline/dd170092-656a-4895-8550-daac0c4b0aa0:2df7625
-    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" >
-    <title>Amazonneuve</title>
+    <title>shopping</title>
     <style>
         * {
             margin: 0;
             padding: 0;
+        }
+        .shop {
+            margin: 50px auto;
+            width: 1200px;
+            height: 1600px;
+            background-color: skyblue;
+        }
+        .produit {
+            float: left;
+            width: 150px;
+            height: 240px;
+            background-color: grey;
+            border: 1px solid pink;
+        }
+        .produit img {
+            width: 100%;
+            height: 60%;
+        }
+        .produit input {
+            width: 70%;
         }
         div.nav {
             height: 50px;
@@ -44,8 +61,10 @@
         .connecter img {
             height: 20px;
         }
+
     </style>
-</head>
+</head> 
+
 <body>
     <div class="nav">
         <span class="panier">
@@ -57,8 +76,22 @@
 
     </div>
     <h1>Bienvenue</h1>
-    <h1><a href="/compte/shopping/">shopping</a></h1>
-
+    <h1><a href="/compte/panier/">panier</a></h1>
+    <div class="shop">
+        {% for obj in liste %}
+        <div class="produit">
+            <img src="{{ obj.lienPhoto}}" alt="">
+            <h5>{{ obj.nomProduit }}</h5>
+            <h4>{{ obj.Unitair }}</h4>
+            <form action="" method="post">
+                {% csrf_token %}   
+            <input type="number" min="0" name="{{ obj.id}}" value="0" required="required">
+            <input type="submit" value="ajouter au panier">
+            </form>
+        </div>
+        {% endfor %}
+        
+    </div>
 
     <script>
         let connecter = document.querySelector(".connecter");

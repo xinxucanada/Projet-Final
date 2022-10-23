@@ -1,4 +1,5 @@
 from ast import Delete
+from pyexpat import model
 import re
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -6,7 +7,7 @@ from gestion_vente import models
 from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from gestion_vente.magasin import Client, Magasin, Order
+from gestion_vente.magasin import Client, Magasin, Order,Produit_chose,Panier
 from django.utils.safestring import mark_safe
 
 m = Magasin()
@@ -231,3 +232,41 @@ def inventaire_edit(request, nid):
     else:
         # print(form.errors)
         return render(request, "inventaire_edit.html", {"form":form})
+
+def liste_ligne_panier(request):
+    # models.LignePanier.objects.create(nomCompte_id="ABC002", idProduit_id=137, quantite=2)
+    liste = models.LignePanier.objects.all()
+    return render(request, "liste_panier.html", {"liste": liste})
+
+def compte_panier(request):
+    print(m.client)
+    print(type(m.client))
+    print(m.client.panier)
+    print(m.client.panier.choses)
+    liste = m.client.panier.choses
+   
+    return render(request, "compte_panier.html", {"liste": liste})
+
+def shopping(request):
+    nom = '<a href="/compte/login/">se connecter</a>'
+    if m.client:
+        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
+            <li><a href="">profile</a></li><li><a href="">mes commandes</a></li>\
+            <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
+    nom = mark_safe(nom)   
+    liste = models.Produit.objects.all()
+    if request.method == "GET":
+        return render(request, "shopping.html", {"liste": liste, "nom":nom})
+    # for i in range(liste.first().id, liste.last().id + 1):
+    for i in range(113, 139):
+        qty = int(request.POST.get(str(i)))
+        # qty = int(request.POST.get(i))
+        if qty != 0:
+            produit_select = Produit_chose(i, qty)
+            print(produit_select)
+            print(m.client)
+            print(m.client.panier)
+            m.client.panier.ajouter(produit_select)
+            return redirect("shopping")
+
+    
