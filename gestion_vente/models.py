@@ -73,7 +73,6 @@ class Inventaire(models.Model):
     numLot = models.CharField(verbose_name='numero de lot', max_length=20, null=True, blank=True)
 
 
-
 class LignePanier(models.Model):
 
     nomCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="nomCompte",on_delete= models.CASCADE)

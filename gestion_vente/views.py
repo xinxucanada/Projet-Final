@@ -11,6 +11,7 @@ from gestion_vente.magasin import Client, Magasin, Order,Produit_chose,Panier
 from django.utils.safestring import mark_safe
 
 m = Magasin()
+panier_visiteur = Panier("VISITEUR")
 
 # nav barre change selon le situation de compte connexion
 def get_nom():
@@ -141,7 +142,7 @@ def compte_panier(request):
     nom = get_nom()
     data_dict = {}
     # mettre toutes les conditions dans un dico, comme nom du compte
-    data_dict["nomCompte"] = m.client.compte
+    data_dict["nomCompte"] = m.client.compte if m.client else "VISITEUR"
     # liste = models.LignePanier.objects.filter(**data_dict)
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     liste = []
@@ -170,6 +171,8 @@ def panier_delete(request, nid):
     return redirect("/compte/panier/")
 
 def compte_commander(request):
+    if not m.client:
+        return redirect("/compte/login/")
     nom = get_nom()
     data_dict = {}
     data_dict["nomCompte"] = m.client.compte
@@ -192,13 +195,19 @@ def compte_caisse(request):
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     for row in liste_panier:
         inventair_deduct(row.idProduit, row.quantite)
+    liste_panier = models.LignePanier.objects.filter(**data_dict).delete()
     return HttpResponse("bien jouer")   
 
 def inventair_deduct(idProduit, quantite):
-    quantite_stock = models.Inventaire.objects.filter(idProduit=idProduit).first().inventaire
+    row_first = models.Inventaire.objects.filter(idProduit=idProduit).order_by("dateLimite").first()
+    quantite_stock = row_first.inventaire
     if quantite_stock > quantite:
-        models.Inventaire.objects.filter(idProduit=idProduit).first().inventaire = quantite_stock-quantite
-        
+        models.Inventaire.objects.filter(id=row_first.id).update(inventaire = quantite_stock-quantite)
+    else:
+        quantite -= quantite_stock
+        models.Inventaire.objects.filter(id=row_first.id).delete()
+        inventair_deduct(idProduit, quantite)
+
 
 def shopping(request):
     nom = get_nom()   
@@ -211,13 +220,13 @@ def shopping(request):
             qty = int(request.POST.get(str(i)))
         # qty = int(request.POST.get(i))
         # if qty != 0:
-            produit_select = Produit_chose(i, qty)
+            # produit_select = Produit_chose(i, qty)
             # print(produit_select)
             # print(m.client)
             # print(m.client.panier)
-            m.client.panier.ajouter(produit_select)
-            models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
-            m.client.panier.save()
+            m.client.panier.ajouter(i, qty)
+            # models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
+            # m.client.panier.save()
 
             return redirect("shopping")
 

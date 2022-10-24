@@ -1,38 +1,40 @@
 from gestion_vente import models
 
-class Produit_chose:
+# class Produit_chose:
 
-    def __init__(self,id, qty) -> None:
-        self.id = id
-        self.qty = qty
+#     def __init__(self,id, qty) -> None:
+#         self.id = id
+#         self.qty = qty
 
-    def __str__(self) -> str:
-        return f"{self.id},{self.qty}"
+#     def __str__(self) -> str:
+#         return f"{self.id},{self.qty}"
 
 class Panier:
     
-    def __init__(self, nom_compte=None) -> None:
+    def __init__(self, nom_compte) -> None:
         self.nom_compte = nom_compte
-        self.choses = {}
+        self.dico = {"nomCompte": nom_compte}
 
-    def ajouter(self, produit):
-        if produit.id in self.choses.keys():
-            self.choses[produit.id] += produit.qty
+    def ajouter(self, produitID, qty):
+        self.dico["idProduit"] = produitID
+        if models.LignePanier.objects.filter(**self.dico).exists():
+            qty += models.LignePanier.objects.filter(**self.dico).first().quantite
+            models.LignePanier.objects.filter(**self.dico).update(quantite=qty)
         else:
-            self.choses[produit.id] = produit.qty
+            models.LignePanier.objects.create(nomCompte=self.nom_compte, idProduit=produitID, quantite=qty)
 
-    def __add__(self, other):
-        # p.idClient = self.idClient
-        for k, v in other.choses.items():
-            if k in self.choses.keys():
-                self.choses[k] += v
-            else:
-                self.choses[k] = v
-        other.choses = {}
+    # def __add__(self, other):
+    #     # p.idClient = self.idClient
+    #     for k, v in other.choses.items():
+    #         if k in self.choses.keys():
+    #             self.choses[k] += v
+    #         else:
+    #             self.choses[k] = v
+    #     other.choses = {}
 
-    def save(self):
-        for k, v in self.choses.items():
-            models.LignePanier.objects.create(nomCompte_id=self.nom_compte, idProduit_id=k, quantite=v)
+    # def save(self):
+    #     for k, v in self.choses.items():
+    #         models.LignePanier.objects.create(nomCompte_id=self.nom_compte, idProduit_id=k, quantite=v)
         
 
 class Order:
@@ -63,7 +65,7 @@ class Magasin:
 
     def __init__(self): 
         self.client = None
-        self.panier = Panier()
+        # self.panier = Panier()
         
 
     def login(self, nom_compte):
