@@ -20,7 +20,7 @@ urlpatterns = [
     path("inventaire/<int:nid>/delete/", views.inventaire_delete, name="inventaire_delete"),
     path("linge_panier/<int:nid>/delete/", views.panier_delete, name="panier_delete"),
     path("inventaire/<int:nid>/edit/", views.inventaire_edit, name="inventaire_edit"),
-    path("compte/caisse/", views.inventaire_edit, name="inventaire_edit"),
+    path("compte/caisse/", views.compte_caisse, name="compte_caisse"),
 
 
 

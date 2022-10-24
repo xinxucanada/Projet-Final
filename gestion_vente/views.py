@@ -137,13 +137,6 @@ def compte_deconnecter(request):
     m.client = None
     return redirect('home')
 
-
-# class LignePanierModelForm(forms.ModelForm):
-#     idProduit_id = forms.IntegerField(disabled=True, label='Produit')
-#     class Meta:
-#         model = models.LignePanier
-#         fields = ("idProduit_id", "quantite")
-
 def compte_panier(request):
     nom = get_nom()
     data_dict = {}
@@ -193,8 +186,19 @@ def compte_commander(request):
         montant += obj.quantite*obj.idProduit.prixUnitair
     return render(request, "compte_commander.html", {"liste": liste, "nom": nom, "montant":montant})
 
-def caisse(request):
-    pass    
+def compte_caisse(request):
+    data_dict = {}
+    data_dict["nomCompte"] = m.client.compte
+    liste_panier = models.LignePanier.objects.filter(**data_dict)
+    for row in liste_panier:
+        inventair_deduct(row.idProduit, row.quantite)
+    return HttpResponse("bien jouer")   
+
+def inventair_deduct(idProduit, quantite):
+    quantite_stock = models.Inventaire.objects.filter(idProduit=idProduit).first().inventaire
+    if quantite_stock > quantite:
+        models.Inventaire.objects.filter(idProduit=idProduit).first().inventaire = quantite_stock-quantite
+        
 
 def shopping(request):
     nom = get_nom()   
