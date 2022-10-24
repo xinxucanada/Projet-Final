@@ -56,24 +56,33 @@
 
     <table>
         <thead>
-            <th>produit</th>
+            <th colspan="2">produit</th>
             <th>qty</th>
+            <th>prixUnitaire</th>
+            <th>subTotal</th>
+            <th>modifier</th>
         </thead>
+        
         <tbody>
-            <form action="" method="post"></form>
-            {% for obj in liste %}
+            <form action="" method="post">
+            {% csrf_token %}
+            {% for line in liste %}
             <tr>
-                <td>{{ obj.idProduit }}</td>
-                <td><input type="number" value="{{ obj.quantite }}" name="{{ obj.id }}"></td>
+                <td>{{ line.0 }}</td>
+                <td>{{ line.1 }}</td>
+                <td><input type="number" value="{{ line.2 }}" name="{{ line.1 }}"></td>
+                <td>{{ line.3 }}</td>
+                <td>{{ line.4 }}</td>
+                <td><a href="/linge_panier/{{ line.5 }}/delete/">supprimer</a></td>
             </tr>
             {% endfor %}
-            <tr>
-                <th colspan="2"><input type="submit" value="commander"></th>
-            </tr>
+           <tr>
+            <th colspan="2"><input type="submit" value="confirmer"></th>
+           </tr>
         </tbody>
-        
-
+        </form>
     </table>
+    <a href="/compte/commander/">Allez a la caisse</a>
     <script>
         let connecter = document.querySelector(".connecter");
         let ul = connecter.querySelector("ul");

@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 
 m = Magasin()
 
+# nav barre change selon le situation de compte connexion
 def get_nom():
     nom = '<a href="/compte/login/">se connecter</a>'
     if m.client:
@@ -32,18 +33,17 @@ class CompteModelForm(forms.ModelForm):
     nomCompte = forms.CharField(min_length=4, label="Nom Compte")
     telephone = forms.CharField(
         label = "telephone",
+    # mettons que numero de telephon au canada est 10 chiffres
         validators = [RegexValidator(r'^\d{10}$', 'telephone invalide')]
     )
-    
-
     class Meta:
         model = models.CompteUser
         fields = ["nomCompte", "nom", "prenom", "telephone", "courriel", "motDePasse", "dateNaissance", "gender"]
         widgets = {
+            # change input type a password
             "motDePasse": forms.PasswordInput(), 
         }
         
-    
     def clean_telephone(self):
         txt_telephone = self.cleaned_data["telephone"]
         exists = models.CompteUser.objects.filter(telephone=txt_telephone).exists()
@@ -52,12 +52,12 @@ class CompteModelForm(forms.ModelForm):
 
         return txt_telephone
 
+# verifier si le 'user name' ou telephone ou courriel deja inscrit
     def clean_nomCompte(self):
         txt_nomCompte = self.cleaned_data["nomCompte"]
         exists = models.CompteUser.objects.filter(nomCompte=txt_nomCompte).exists()
         if exists:
             raise ValidationError("Nom du compte deja existe")
-
         return txt_nomCompte
 
     def clean_courriel(self):
@@ -65,7 +65,6 @@ class CompteModelForm(forms.ModelForm):
         exists = models.CompteUser.objects.filter(courriel=txt_courriel).exists()
         if exists:
             raise ValidationError("courriel deja existe")
-
         return txt_courriel
  
     def clean_motDePasse(self):
@@ -74,9 +73,6 @@ class CompteModelForm(forms.ModelForm):
             raise ValidationError("mot de passe doit avoir plus que 8 chars")
 
         return txt_motDePasse
-    
-
-
 
 def compte_creer(request):
 
@@ -87,68 +83,37 @@ def compte_creer(request):
     form = CompteModelForm(data=request.POST)
     if form.is_valid():
         form.save()
-        return HttpResponse("Compte creer success")
+        # demander l'utilisateur de creer son adressed des que son compte est cree
+        return redirect("/adresse/creer/")
     else:
         return render(request, "compte_creer.html", {"form":form})
 
-
-def compte_liste(request):
-    #models.CompteUser.objects.create(nomCompte="example",nom="Bone", prenom="James", telephone="1237894650",courriel="example@gogoe.com",motDePasse="123456", dateNaissance="1985-10-1",gender=1)
-    
-    liste1 = models.CompteUser.objects.all()
-    row = models.CompteUser.objects.filter(id=1).first()
-    form = CompteModelForm(instance=row)
-
-    return render(request, "compte_liste.html", {"liste1":liste1, 'form': form})
-
-def compte_delete(request, nid):
-    models.CompteUser.objects.filter(id=nid).delete()
-    return redirect("/compte/liste")
-
-
 class AdresseModelForm(forms.ModelForm):
-
-    # idCompte = forms.IntegerField(disabled=True, label="compte")
 
     class Meta:
         model = models.Adresse
         fields = ('adresse', 'ville', 'codePostale', 'province',)
         
-
-
-def adresse_creer(request, nid):
-
-    # adressTemp = models.Adresse.objects.create(idCompte=nid, adresse='n/a', ville='n/a', codePostale='X0X0X0',province="QC")
-    
+def adresse_creer(request):
+    nom = get_nom()
     if request.method == "GET":
         form = AdresseModelForm()
-        # form = AdresseModelForm(idCompte=nid)
-        return render(request, "adresse_creer.html", {"form":form})
+        return render(request, "adresse_creer.html", {"form":form, "nom":nom})
 
     form = AdresseModelForm(data=request.POST)
     if form.is_valid():
-        
+    # comme AdresseModelForm n'a pas compte_id, il faut "save(commit=False)", puis donner id
         new_adresse = form.save(commit=False)
-        new_adresse.idCompte = nid
+        new_adresse.Compte_id = models.CompteUser.objects.filter(nomCompte=m.client.compte).first().id
         new_adresse.save()
-        return HttpResponse("Adresse creer success")
+        return redirect("home")
     else:
         return render(request, "adresse_creer.html", {"form":form})
-
-# class LoginModelForm(forms.ModelForm): 
-
-#     class Meta:
-#         model = models.CompteUser
-#         fields = ["nomCompte", "telephone", "courriel", "motDePasse"]
-#         widgets = {
-#             "motDePasse": forms.PasswordInput(), 
-#         }
-
 
 def compte_login(request):
     if request.method == "GET":
         return render(request, 'compte_login.html')
-    # form = LoginModelForm(data=request.POST)
+# verifier que le client entre 'user name' ou telephone ou courriel
     data_login = request.POST.get('data_login')
     if models.CompteUser.objects.filter(nomCompte=data_login).exists():
         nom_compte = data_login
@@ -161,21 +126,112 @@ def compte_login(request):
         return render(request, 'compte_login.html', {"msg_error": msg_error})
     pwd = request.POST.get('pwd') 
     if pwd == models.CompteUser.objects.filter(nomCompte= nom_compte).first().motDePasse:
+# creer objet client par fonction login
         m.login(nom_compte)
         return redirect('home')
     else:
         msg_error = 'Mot de pass incorrect!!'
         return render(request, 'compte_login.html', {"msg_error": msg_error})
 
-
 def compte_deconnecter(request):
     m.client = None
     return redirect('home')
 
 
-def produit_liste(request):
-    # models.Produit.objects.all().delete()
+# class LignePanierModelForm(forms.ModelForm):
+#     idProduit_id = forms.IntegerField(disabled=True, label='Produit')
+#     class Meta:
+#         model = models.LignePanier
+#         fields = ("idProduit_id", "quantite")
+
+def compte_panier(request):
+    nom = get_nom()
+    data_dict = {}
+    # mettre toutes les conditions dans un dico, comme nom du compte
+    data_dict["nomCompte"] = m.client.compte
+    # liste = models.LignePanier.objects.filter(**data_dict)
+    liste_panier = models.LignePanier.objects.filter(**data_dict)
+    liste = []
+    montant = 0
+    for obj in liste_panier:
+        # avec 'foreignKey' fonctin, on peut avoir lienPhoto et prixUnitair
+        photo = mark_safe(f'<img src="{obj.idProduit.lienPhoto}" alt="" style="width:20px;height:20px;">')
+        line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite*obj.idProduit.prixUnitair, obj.id]
+        liste.append(line)
+        montant += obj.quantite * obj.idProduit.prixUnitair
+    if request.method == "GET":
+        return render(request, "compte_panier.html", {"liste": liste, "nom": nom})
+    for obj in liste:
+    # si client changer la quantite, update la base de donnee
+        if request.POST.get(str(obj[1])):
+            quantite_n = int(request.POST.get(str(obj[1])))
+            data_dict["idProduit"] = obj[1]
+            models.LignePanier.objects.filter(**data_dict).update(quantite=quantite_n)
+    return redirect("/compte/panier/")
+
+def panier_delete(request, nid):
+    data_dict = {}
+    data_dict["nomCompte"] = m.client.compte
+    data_dict["id"] = nid
+    models.LignePanier.objects.filter(**data_dict).delete()
+    return redirect("/compte/panier/")
+
+def compte_commander(request):
+    nom = get_nom()
+    data_dict = {}
+    data_dict["nomCompte"] = m.client.compte
+    liste_panier = models.LignePanier.objects.filter(**data_dict)
+    liste = []
+    montant = 0
+    # puisque la base de donnee 'ligne panier n'a pas d'attributs photo, prix, subtotal et montant total no plus'
+    # on cree une liste pour afficher toutes les informations
+    for obj in liste_panier:
+        # avec 'foreignKey' fonctin, on peut avoir lienPhoto et prixUnitair
+        photo = mark_safe(f'<img src="{obj.idProduit.lienPhoto}" alt="" style="width:20px;height:20px;">')
+        line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite*obj.idProduit.prixUnitair]
+        liste.append(line)
+        montant += obj.quantite*obj.idProduit.prixUnitair
+    return render(request, "compte_commander.html", {"liste": liste, "nom": nom, "montant":montant})
+
+def caisse(request):
+    pass    
+
+def shopping(request):
+    nom = get_nom()   
+    liste = models.Produit.objects.all()
+    if request.method == "GET":
+        return render(request, "shopping.html", {"liste": liste, "nom":nom})
+    for i in range(liste.first().id, liste.last().id + 1):
+    # for i in range(113, 139):
+        if request.POST.get(str(i)):
+            qty = int(request.POST.get(str(i)))
+        # qty = int(request.POST.get(i))
+        # if qty != 0:
+            produit_select = Produit_chose(i, qty)
+            # print(produit_select)
+            # print(m.client)
+            # print(m.client.panier)
+            m.client.panier.ajouter(produit_select)
+            models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
+            m.client.panier.save()
+
+            return redirect("shopping")
+
+"""
+fonctions reservees pour l'administrateur
+"""
     
+def compte_liste(request):
+    liste1 = models.CompteUser.objects.all()
+    row = models.CompteUser.objects.filter(id=1).first()
+    form = CompteModelForm(instance=row)
+    return render(request, "compte_liste.html", {"liste1":liste1, 'form': form})
+
+def compte_delete(request, nid):
+    models.CompteUser.objects.filter(id=nid).delete()
+    return redirect("/compte/liste")
+
+def produit_liste(request):
     listeProduit = models.Produit.objects.all()
     return render(request, "produit_liste.html", {"listeProduit":listeProduit} )
 
@@ -201,15 +257,11 @@ def produit_edit(request, nid):
         form.save()
         return redirect("/produit/liste/")
     else:
-        # print(form.errors)
         return render(request, "produit_edit.html", {"form":form})
 
 def inventaire_liste(request):
      
-    # models.Inventaire.objects.create(idProduit_id=138, inventaire=90, dateLimite="2023-12-12", numLot="AH242357") 
-
     inventaires = models.Inventaire.objects.all().order_by("dateLimite").order_by("idProduit")
-
     return render(request, "inventaire_liste.html", {"liste":inventaires} )
 
 def inventaire_delete(request, nid):
@@ -227,82 +279,15 @@ def inventaire_edit(request, nid):
     if request.method == "GET":
         form = inventaireModelForm(instance=row_obj)
         return render(request, "inventaire_edit.html", {"form": form})
-    
     form = inventaireModelForm(data=request.POST, instance=row_obj) 
     if form.is_valid():
         form.save()
         return redirect("/inventaire/liste/")
     else:
-        # print(form.errors)
         return render(request, "inventaire_edit.html", {"form":form})
 
+# afficher toutes les lignes de panier
 def liste_ligne_panier(request):
-    # models.LignePanier.objects.create(nomCompte_id="ABC002", idProduit_id=137, quantite=2)
     liste = models.LignePanier.objects.all()
     return render(request, "liste_panier.html", {"liste": liste})
 
-class LignePanierModelForm(forms.ModelForm):
-    idProduit_id = forms.IntegerField(disabled=True, label='Produit')
-    class Meta:
-        model = models.LignePanier
-        fields = ("idProduit_id", "quantite")
-
-def compte_panier(request):
-    nom = get_nom()
-    liste = models.LignePanier.objects.filter(nomCompte=m.client.compte)
-    print(liste)
-    for obj in liste:
-        print(obj)
-        print(obj.quantite)
-        print(obj.idProduit)
-    if request.method == "GET":
-        return render(request, "compte_panier.html", {"liste": liste, "nom": nom})
-    # for chaque in liste:
-    #     form = LignePanierModelForm(data=request.POST, instance=chaque)
-    #     if form.is_valid():
-    #         new_form = form.save(commit=False)
-    #         new_form.nomCompte = m.client.compte
-    #         new_form.save()
-    #         return redirect("/compte/panier")
-
-'''
-        new_adresse = form.save(commit=False)
-        new_adresse.idCompte = nid
-        new_adresse.save()
-    if request.method == "GET":
-        form = NumEditModelForm(instance=row_obj)
-        return render(request, "num_edit.html", {"form": form})
-    
-    form = NumEditModelForm(data=request.POST, instance=row_obj) #instance 是数据库里取得旧数据,data是post过来的新数据
-    if form.is_valid():
-        form.save()
-        return redirect("/num/list/")
-    else:
-        # print(form.errors)
-        return render(request, "num_edit.html", {"form":form})
-'''
-   
-    
-
-def shopping(request):
-    nom = get_nom()   
-    liste = models.Produit.objects.all()
-    if request.method == "GET":
-        return render(request, "shopping.html", {"liste": liste, "nom":nom})
-    for i in range(liste.first().id, liste.last().id + 1):
-    # for i in range(113, 139):
-        if request.POST.get(str(i)):
-            qty = int(request.POST.get(str(i)))
-        # qty = int(request.POST.get(i))
-        # if qty != 0:
-            produit_select = Produit_chose(i, qty)
-            # print(produit_select)
-            # print(m.client)
-            # print(m.client.panier)
-            m.client.panier.ajouter(produit_select)
-            models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
-            m.client.panier.save()
-
-            return redirect("shopping")
-
-    

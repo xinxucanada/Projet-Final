@@ -20,15 +20,7 @@
 </head>
 <body>
     <div class="login">
-        <!-- <form >
-            <h2>VOUS AVEZ DÉJÀ UN COMPTE?</h2>
-            <h4>*Nom du compte</h4>
-            <input type="text" name="">
-            <h4>*MOT DE PASSE</h4>
-            <input type="password"><br>
-            <input type="checkbox" checked="checked"> Retenir mes coordonnées
-            <input class="button" type="submit" value="OUVERTURE DE SESSION"><br><br>
-        </form> -->
+        
         <form method="post" novalidate>
             {% csrf_token %}
           
@@ -42,8 +34,7 @@
              
               <input type="submit" value="Conneter">
           </form>
-        
-       
     </div>
+    <div><a href="/compte/creer/">creer un compte</a></div>
 </body>
 </html>
