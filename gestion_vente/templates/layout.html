@@ -60,10 +60,14 @@
         .produit input {
             width: 70%;
         }
+        a {
+            text-decoration: none;
+        }
         li {
             list-style: none;
         }
         .connecter  ul {
+            /* float: left; */
             font-size: 20px;
             display: none;
             background-color: grey;
@@ -90,12 +94,77 @@
             color: white;
             text-align: center;
         }
-        .profile, .adresses, .histoire {
+        /* .profile, .adresses, .histoire {
             display: block;
             height: 200px;
             margin-bottom: 30px;
             background-color: pink;
 
+        } */
+        .userinfo  {
+            height: 900px;
+            background-color:rgb(233, 235, 236);
+        }
+        .profile {
+            float: left;
+            width: 300px;
+            background-color: rgb(192, 177, 177);
+            border-radius: 20px;
+            margin-top: 50px;
+
+        }
+        .profile dt {
+            text-align: left;
+            margin-left: 10px;
+            font-size: 18px;
+        }
+        .profile dd {
+            text-align: left;
+            margin-left: 30px;
+            font-size: 24px;
+            color: rgb(10, 9, 17);
+        }
+        .profile button {
+            margin-left: 150px;
+            border: none;
+        }
+        .adresses {
+            float: left;
+            width: 800px;
+            /* background-color: rgb(192, 177, 177); */
+            margin-left: 80px;
+        }
+        .adresse, .adresseajouter{
+            height: 150px;
+            background-color: rgb(143, 160, 129);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 10px;
+            border: 2px solid rgb(5, 5, 5);
+        }
+        .adresse button {
+            margin-left: 300px;
+            margin-top: 30px;
+            border: none;
+            font-size: 20px;
+        }
+        .adresseajouter {
+            background-color: rgb(178, 212, 178);
+            border: 2px dashed rgb(5, 5, 5);
+        }
+        .adresseajouter button {
+            display: block;
+            margin: 30px auto;
+            width: 80px;
+            height: 80px;
+            /* margin-top: 30px; */
+            font-size: 60px;
+            color: #000;
+            border-radius: 50%;
+        }
+        .adresse li {
+            font-size: 24px;
+            line-height: 36px;
         }
     </style>
 </head>

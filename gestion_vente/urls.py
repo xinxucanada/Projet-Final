@@ -12,6 +12,7 @@ urlpatterns = [
     path("compte/<int:nid>/delete/", views.compte_delete, name="compte_delete"),
     path("compte/commander/", views.compte_commander, name="compte_commander"),
     path("adresse/creer/", views.adresse_creer, name="adresse_creer"),
+    path("adresse/modifier/", views.adresse_modifier, name="adresse_modifier"),
     path("produit/<int:nid>/delete/", views.produit_delete, name="produit_delete"),
     path("produit/<int:nid>/edit/", views.produit_edit, name="produit_edit"),
     path("produit/liste/", views.produit_liste, name="produit_liste"),
@@ -22,6 +23,7 @@ urlpatterns = [
     path("inventaire/<int:nid>/edit/", views.inventaire_edit, name="inventaire_edit"),
     path("compte/caisse/", views.compte_caisse, name="compte_caisse"),
     path("compte/info/", views.compte_info, name="compte_info"),
+    path("compte/modifier/", views.compte_modifer, name="compte__modifer"),
 
 
 

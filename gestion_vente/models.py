@@ -26,31 +26,31 @@ class CompteUser(models.Model):
         return self.nomCompte
 
 
-class Adresse(models.Model):
+# class Adresse(models.Model):
 
-    Compte = models.ForeignKey(verbose_name='id compte', to="CompteUser", to_field="id", on_delete=models.CASCADE)
-    adresse = models.CharField(verbose_name='adresse', max_length=50)
-    ville = models.CharField(verbose_name='ville', max_length=20)
-    codePostale = models.CharField(verbose_name='code postale', max_length=7)
-    province_choix = [
-        ('QC', 'Quebec'),
-        ('ON', 'Ontario'),
-        ('BC', 'Colombie-Britanique'),
-        ('AB', 'Alberta'),
-        ('PE', 'Île-du-Prince-Édouard'),
-        ('MB', 'Manitoba'),
-        ('NB', 'Nouveau-Brunswick'),
-        ('NS', 'Nouvelle-Écosse'),
-        ('SK', 'Saskatchewan'),
-        ('NL', 'Terre-Neuve-et-Labrador'),
-        ('NU', 'Nunavut'),
-        ('NT', 'Territoires du Nord-Ouest'),
-        ('YT', 'Yukon'),
-    ]
-    province = models.CharField(verbose_name='province', max_length=3, choices=province_choix)
+#     Compte = models.ForeignKey(verbose_name='nom du compte', to="CompteUser", to_field="nomCompte", on_delete=models.CASCADE)
+#     adresse = models.CharField(verbose_name='adresse', max_length=50)
+#     ville = models.CharField(verbose_name='ville', max_length=20)
+#     codePostale = models.CharField(verbose_name='code postale', max_length=7)
+#     province_choix = [
+#         ('QC', 'Quebec'),
+#         ('ON', 'Ontario'),
+#         ('BC', 'Colombie-Britanique'),
+#         ('AB', 'Alberta'),
+#         ('PE', 'Île-du-Prince-Édouard'),
+#         ('MB', 'Manitoba'),
+#         ('NB', 'Nouveau-Brunswick'),
+#         ('NS', 'Nouvelle-Écosse'),
+#         ('SK', 'Saskatchewan'),
+#         ('NL', 'Terre-Neuve-et-Labrador'),
+#         ('NU', 'Nunavut'),
+#         ('NT', 'Territoires du Nord-Ouest'),
+#         ('YT', 'Yukon'),
+#     ]
+#     province = models.CharField(verbose_name='province', max_length=3, choices=province_choix)
 
-    def __str__(self) -> str:
-        return self.adresse + self.ville + self.province + self.codePostale
+#     def __str__(self) -> str:
+#         return self.adresse + self.ville + self.province + self.codePostale
 
 class Produit(models.Model):
 

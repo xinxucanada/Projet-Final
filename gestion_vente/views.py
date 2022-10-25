@@ -52,7 +52,8 @@ class CompteModelForm(forms.ModelForm):
             # change input type a password
             "motDePasse": forms.PasswordInput(), 
         }
-        
+
+# verifier si le 'user name' ou telephone ou courriel deja inscrit        
     def clean_telephone(self):
         txt_telephone = self.cleaned_data["telephone"]
         exists = models.CompteUser.objects.filter(telephone=txt_telephone).exists()
@@ -61,7 +62,6 @@ class CompteModelForm(forms.ModelForm):
 
         return txt_telephone
 
-# verifier si le 'user name' ou telephone ou courriel deja inscrit
     def clean_nomCompte(self):
         txt_nomCompte = self.cleaned_data["nomCompte"]
         exists = models.CompteUser.objects.filter(nomCompte=txt_nomCompte).exists()
@@ -97,6 +97,49 @@ def compte_creer(request):
     else:
         return render(request, "compte_creer.html", {"form":form})
 
+# class hirétage
+class CompteModifier(CompteModelForm):
+
+    nomCompte = forms.CharField(min_length=4, label="Nom Compte", disabled="disabled")
+
+    def clean_telephone(self):
+        txt_telephone = self.cleaned_data["telephone"]
+        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(telephone=txt_telephone).exists()
+        if exists:
+            raise ValidationError("Numero de telephone deja existe")
+        return txt_telephone
+    def clean_nomCompte(self):
+        txt_nomCompte = self.cleaned_data["nomCompte"]
+        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(nomCompte=txt_nomCompte).exists()
+        if exists:
+            raise ValidationError("Nom du compte deja existe")
+        return txt_nomCompte
+    def clean_courriel(self):
+        txt_courriel = self.cleaned_data["courriel"]
+        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(courriel=txt_courriel).exists()
+        if exists:
+            raise ValidationError("courriel deja existe")
+        return txt_courriel
+
+
+
+def compte_modifer(request):
+    nom = get_nom()
+    if not m.client:
+        return redirect("home")
+    else:
+        row_obj = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
+        if request.method == "GET":
+            form = CompteModifier(instance=row_obj)
+            return render(request, "compte_modifier.html", {"form": form, "nom": nom})
+
+        form = CompteModifier(data=request.POST, instance=row_obj) 
+        if form.is_valid():
+            form.save()
+            return redirect("/compte/info/")
+        else:
+            return render(request, "compte_modifier.html", {"form":form, "nom": nom})
+
 class AdresseModelForm(forms.ModelForm):
 
     class Meta:
@@ -107,7 +150,7 @@ def adresse_creer(request):
     nom = get_nom()
     if request.method == "GET":
         form = AdresseModelForm()
-        return render(request, "adresse_creer.html", {"form":form, "nom":nom, "nbr": nbr})
+        return render(request, "adresse_creer.html", {"form":form, "nom":nom})
 
     form = AdresseModelForm(data=request.POST)
     if form.is_valid():
@@ -118,6 +161,25 @@ def adresse_creer(request):
         return redirect("home")
     else:
         return render(request, "adresse_creer.html", {"form":form})
+
+def adresse_modifier(request):
+    nom = get_nom()
+    if not m.client:
+        return redirect("home")
+    else:
+        row_obj = models.Adresse.objects.filter(Compte_id=m.client.compte).first()
+        if request.method == "GET":
+            form = AdresseModelForm(instance=row_obj)
+            return render(request, "adresse_modifier.html", {"form": form, "nom": nom})
+
+        form = AdresseModelForm(data=request.POST, instance=row_obj) 
+        if form.is_valid():
+            new_adresse = form.save(commit=False)
+            new_adresse.Compte_id = models.CompteUser.objects.filter(nomCompte=m.client.compte).first().id
+            new_adresse.save()
+            return redirect("/compte/info/")
+        else:
+            return render(request, "adresse_modifier.html", {"form":form, "nom": nom})
 
 def compte_login(request):
     if request.method == "GET":
@@ -157,7 +219,7 @@ def compte_info(request):
     print(profile.nomCompte)
     adresses = models.Adresse.objects.filter(Compte_id=profile.id)
     
-    return render(request, "compte_info.html", {"nom": nom, "nbr": nbr, "profile": profile,"adresses":adresses})
+    return render(request, "compte_info.html", {"nom": nom, "nbr": nbr, "profile": profile, "adresses":adresses})
 
 
 def compte_panier(request):
