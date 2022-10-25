@@ -167,8 +167,7 @@ def adresse_modifier(request, nid):
     if not m.client:
         return redirect("home")
     else:
-        Compte_id = models.CompteUser.objects.filter(nomCompte=m.client.compte).first().id
-        row_obj = models.Adresse.objects.filter(Compte_id=Compte_id).first()
+        row_obj = models.Adresse.objects.filter(id=nid).first()
         if request.method == "GET":
             form = AdresseModelForm(instance=row_obj)
             return render(request, "adresse_modifier.html", {"form": form, "nom": nom})
@@ -182,9 +181,9 @@ def adresse_modifier(request, nid):
         else:
             return render(request, "adresse_modifier.html", {"form":form, "nom": nom})
 
-def adresse_delete(request):
-
-    pass
+def adresse_delete(request, nid):
+    models.Adresse.objects.filter(id=nid).delete()
+    return redirect("/compte/info/")
 
 def compte_login(request):
     if request.method == "GET":
