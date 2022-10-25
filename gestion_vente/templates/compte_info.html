@@ -22,7 +22,8 @@ Compte Info
             <ul>
                 <li>{{ a.adresse }}</li>
                 <li>{{ a.ville }}, {{ a.codePostale }}, {{ a.get_province_display }}</li>
-                <button><a href="/adresse/modifier/">Modifier</a></button>
+                <button><a href="/adresse/{{ a.id }}/modifier/">Modifier</a></button>
+                <a href="/adresse/delete/">delete</a>
             </ul>
         </div>
         {% endfor %}
