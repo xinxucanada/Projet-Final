@@ -5,7 +5,14 @@ Compte Info
 {% block content %}
 <div class="w">
     <div class="profile w">
-        1
+        <dl>
+            <dt>{{ profile.nomCompte }}</dt>
+            <dd>{{ profile.nom }}</dd>
+            <dd>{{ profile.prenom }}</dd>
+            <dd>{{ profile.telephone }}</dd>
+            <dd>{{ profile.dateNaissance }}</dd>
+            <dd>{{ profile.gender}}</dd>
+        </dl>
     </div>
     <div class="adresses w">2</div>
     <div class="histoire w">3</div>

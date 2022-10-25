@@ -154,9 +154,10 @@ def compte_info(request):
     nom = get_nom()
     nbr = get_nbr()
     profile = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
+    print(profile.nomCompte)
     adresses = models.Adresse.objects.filter(Compte_id=profile.id)
     
-    return render(request, "compte_info.html", {"nom": nom, "nbr": nbr})
+    return render(request, "compte_info.html", {"nom": nom, "nbr": nbr, "profile": profile,"adresses":adresses})
 
 
 def compte_panier(request):
@@ -240,11 +241,11 @@ def shopping(request):
     for i in range(liste.first().id, liste.last().id + 1):
         if request.POST.get(str(i)):
             qty = int(request.POST.get(str(i)))
-        
-            if m.client:
-                m.client.panier.ajouter(i, qty)
-            else:
-                panier_visiteur.ajouter(i, qty)
+            if qty !=0:
+                if m.client:
+                    m.client.panier.ajouter(i, qty)
+                else:
+                    panier_visiteur.ajouter(i, qty)
 
             return redirect("shopping")
 
