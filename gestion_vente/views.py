@@ -7,7 +7,7 @@ from gestion_vente import models
 from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from gestion_vente.magasin import Client, Magasin, Order,Produit_chose,Panier
+from gestion_vente.magasin import Client, Magasin, Order,Panier
 from django.utils.safestring import mark_safe
 
 m = Magasin()
@@ -15,17 +15,25 @@ panier_visiteur = Panier("VISITEUR")
 
 # nav barre change selon le situation de compte connexion
 def get_nom():
-    nom = '<a href="/compte/login/">se connecter</a>'
+    nom = '<a href="/compte/login/">se connecter</a></span></li></ul>'
+    
     if m.client:
-        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</li><ul>\
-            <li><a href="">profile</a></li><li><a href="">mes commandes</a></li>\
-            <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
+        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</span></li><ul>\
+                <li><a href="/compte/info/">profile</a></li><li><a href="">mes commandes</a></li>\
+                <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
     nom = mark_safe(nom)
-    return nom   
+    return nom
+
+def get_nbr():
+    nbr = models.LignePanier.objects.filter(nomCompte_id="VISITEUR").count()
+    if m.client:
+        nbr = models.LignePanier.objects.filter(nomCompte_id=m.client.compte).count()
+    return nbr
 
 def home(request):
     nom = get_nom()
-    return render(request, "home1.html", {"nom": nom})
+    nbr = get_nbr()
+    return render(request, "home1.html", {"nom": nom, "nbr": nbr})
 # Create your views here.
 
 
@@ -99,7 +107,7 @@ def adresse_creer(request):
     nom = get_nom()
     if request.method == "GET":
         form = AdresseModelForm()
-        return render(request, "adresse_creer.html", {"form":form, "nom":nom})
+        return render(request, "adresse_creer.html", {"form":form, "nom":nom, "nbr": nbr})
 
     form = AdresseModelForm(data=request.POST)
     if form.is_valid():
@@ -129,6 +137,8 @@ def compte_login(request):
     if pwd == models.CompteUser.objects.filter(nomCompte= nom_compte).first().motDePasse:
 # creer objet client par fonction login
         m.login(nom_compte)
+# utiliser opérateur '+' pour ajouter les produits du panier visiteur au panier client, puis vider panier visiteur
+        m.client.panier + panier_visiteur
         return redirect('home')
     else:
         msg_error = 'Mot de pass incorrect!!'
@@ -138,8 +148,20 @@ def compte_deconnecter(request):
     m.client = None
     return redirect('home')
 
+def compte_info(request):
+    if not m.client:
+        return redirect("/compte/login/")
+    nom = get_nom()
+    nbr = get_nbr()
+    profile = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
+    adresses = models.Adresse.objects.filter(Compte_id=profile.id)
+    
+    return render(request, "compte_info.html", {"nom": nom, "nbr": nbr})
+
+
 def compte_panier(request):
     nom = get_nom()
+    nbr = get_nbr()
     data_dict = {}
     # mettre toutes les conditions dans un dico, comme nom du compte
     data_dict["nomCompte"] = m.client.compte if m.client else "VISITEUR"
@@ -154,7 +176,7 @@ def compte_panier(request):
         liste.append(line)
         montant += obj.quantite * obj.idProduit.prixUnitair
     if request.method == "GET":
-        return render(request, "compte_panier.html", {"liste": liste, "nom": nom})
+        return render(request, "compte_panier.html", {"liste": liste, "nom": nom, "nbr": nbr})
     for obj in liste:
     # si client changer la quantite, update la base de donnee
         if request.POST.get(str(obj[1])):
@@ -165,7 +187,7 @@ def compte_panier(request):
 
 def panier_delete(request, nid):
     data_dict = {}
-    data_dict["nomCompte"] = m.client.compte
+    data_dict["nomCompte"] = m.client.compte if m.client else "VISITEUR"
     data_dict["id"] = nid
     models.LignePanier.objects.filter(**data_dict).delete()
     return redirect("/compte/panier/")
@@ -194,11 +216,12 @@ def compte_caisse(request):
     data_dict["nomCompte"] = m.client.compte
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     for row in liste_panier:
-        inventair_deduct(row.idProduit, row.quantite)
-    liste_panier = models.LignePanier.objects.filter(**data_dict).delete()
-    return HttpResponse("bien jouer")   
+        inventaire_deduct(row.idProduit, row.quantite)
+    models.LignePanier.objects.filter(**data_dict).delete()
+    return redirect("home")  
 
-def inventair_deduct(idProduit, quantite):
+# Utiliser recursion pour inventaire  déduction, de date péremption plus proche à plus loins
+def inventaire_deduct(idProduit, quantite):
     row_first = models.Inventaire.objects.filter(idProduit=idProduit).order_by("dateLimite").first()
     quantite_stock = row_first.inventaire
     if quantite_stock > quantite:
@@ -206,29 +229,26 @@ def inventair_deduct(idProduit, quantite):
     else:
         quantite -= quantite_stock
         models.Inventaire.objects.filter(id=row_first.id).delete()
-        inventair_deduct(idProduit, quantite)
-
+        inventaire_deduct(idProduit, quantite)
 
 def shopping(request):
-    nom = get_nom()   
+    nom = get_nom()
+    nbr = get_nbr()   
     liste = models.Produit.objects.all()
     if request.method == "GET":
-        return render(request, "shopping.html", {"liste": liste, "nom":nom})
+        return render(request, "shopping.html", {"liste": liste, "nom":nom, "nbr": nbr})
     for i in range(liste.first().id, liste.last().id + 1):
-    # for i in range(113, 139):
         if request.POST.get(str(i)):
             qty = int(request.POST.get(str(i)))
-        # qty = int(request.POST.get(i))
-        # if qty != 0:
-            # produit_select = Produit_chose(i, qty)
-            # print(produit_select)
-            # print(m.client)
-            # print(m.client.panier)
-            m.client.panier.ajouter(i, qty)
-            # models.LignePanier.objects.filter(nomCompte=m.client.compte).delete()
-            # m.client.panier.save()
+        
+            if m.client:
+                m.client.panier.ajouter(i, qty)
+            else:
+                panier_visiteur.ajouter(i, qty)
 
             return redirect("shopping")
+
+
 
 """
 fonctions reservees pour l'administrateur

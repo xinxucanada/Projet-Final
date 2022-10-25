@@ -1,4 +1,5 @@
 from gestion_vente import models
+# from gestion_vente.views import panier_delete
 
 # class Produit_chose:
 
@@ -21,16 +22,15 @@ class Panier:
             qty += models.LignePanier.objects.filter(**self.dico).first().quantite
             models.LignePanier.objects.filter(**self.dico).update(quantite=qty)
         else:
-            models.LignePanier.objects.create(nomCompte=self.nom_compte, idProduit=produitID, quantite=qty)
+            models.LignePanier.objects.create(nomCompte_id=self.nom_compte, idProduit_id=produitID, quantite=qty)
 
-    # def __add__(self, other):
-    #     # p.idClient = self.idClient
-    #     for k, v in other.choses.items():
-    #         if k in self.choses.keys():
-    #             self.choses[k] += v
-    #         else:
-    #             self.choses[k] = v
-    #     other.choses = {}
+# surcharger opérateur 
+    def __add__(self, other):
+        panier_other = models.LignePanier.objects.filter(**other.dico)
+        for row in panier_other:
+            self.ajouter(row.idProduit_id, row.quantite)
+        models.LignePanier.objects.filter(nomCompte_id=other.nom_compte).delete()
+
 
     # def save(self):
     #     for k, v in self.choses.items():
@@ -51,13 +51,13 @@ class Client:
         # self.compte = models.CompteUser.objects.filter(nomCompte=nom_compte).first()
         self.compte = nom_compte
         self.panier = Panier(nom_compte)
-        self.orders = []
-        if models.LignePanier.objects.filter(nomCompte=nom_compte).exists():
-            for ligne in models.LignePanier.objects.filter(nomCompte=nom_compte):
-                self.panier.choses[ligne.idProduit.id] = ligne.quantite
-        if models.Commande.objects.filter(nomCompte=nom_compte).exists():
-            for i in models.Commande.objects.filter(nomCompte=nom_compte):
-                self.orders.append(Order(i.id))
+        # self.orders = []
+        # if models.LignePanier.objects.filter(nomCompte=nom_compte).exists():
+        #     for ligne in models.LignePanier.objects.filter(nomCompte=nom_compte):
+        #         self.panier.choses[ligne.idProduit.id] = ligne.quantite
+        # if models.Commande.objects.filter(nomCompte=nom_compte).exists():
+        #     for i in models.Commande.objects.filter(nomCompte=nom_compte):
+        #         self.orders.append(Order(i.id))
     def __str__(self) -> str:
         return self.compte
 

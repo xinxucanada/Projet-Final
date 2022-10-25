@@ -21,6 +21,7 @@ urlpatterns = [
     path("linge_panier/<int:nid>/delete/", views.panier_delete, name="panier_delete"),
     path("inventaire/<int:nid>/edit/", views.inventaire_edit, name="inventaire_edit"),
     path("compte/caisse/", views.compte_caisse, name="compte_caisse"),
+    path("compte/info/", views.compte_info, name="compte_info"),
 
 
 

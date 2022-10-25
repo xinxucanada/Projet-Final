@@ -1,4 +1,48 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block title %}
+commander
+{% endblock %}
+{% block content %}
+<div class="w">
+<table border="1px">
+    <thead>
+        <th colspan="2">produit</th>
+        <th>qty</th>
+        <th>prixUnitaire</th>
+        <th>subTotal</th>
+    </thead>
+    
+    <tbody>
+    
+        {% for line in liste %}
+        <tr>
+            {% for obj in line %}
+            <td>{{ obj }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+       
+    </tbody>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th></th>
+            <th >
+                Montant Total
+            </th>
+            <th colspan="2">
+                {{ montant }}
+            </th>
+        </tr>
+    </tfoot>
+    </form>
+</table>
+<a href="/compte/caisse/">Commander</a>
+</div>
+{% endblock %}
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -96,4 +140,4 @@
     }
 </script>
 </body>
-</html>
+</html> -->
