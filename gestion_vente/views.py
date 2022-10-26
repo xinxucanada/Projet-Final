@@ -1,4 +1,4 @@
-from ast import Delete
+from ast import Delete, Global
 from pyexpat import model
 import re
 from django.shortcuts import render, redirect
@@ -94,6 +94,7 @@ def compte_creer(request):
     if form.is_valid():
         form.save()
         # demander l'utilisateur de creer son adressed des que son compte est cree
+        m.login(request.POST.get("nomCompte"))
         return redirect("/adresse/creer/")
     else:
         return render(request, "compte_creer.html", {"form":form})
@@ -260,6 +261,7 @@ def panier_delete(request, nid):
     return redirect("/compte/panier/")
 
 def compte_commander(request):
+    global message
     if not m.client:
         return redirect("/compte/login/")
     nom = get_nom()
@@ -278,10 +280,16 @@ def compte_commander(request):
         line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite*obj.idProduit.prixUnitair]
         commande_liste.append(line)
         commande_montant += obj.quantite*obj.idProduit.prixUnitair
-    return render(request, "compte_commander.html", {"liste": commande_liste, "nom": nom, "montant": commande_montant, "adresses": adresses})
+    return render(request, "compte_commander.html", {"liste": commande_liste, "nom": nom, "montant": commande_montant, "adresses": adresses, "message": message})
 
 def compte_caisse(request):
+    global message
+    message = ""
     adresse_id = request.POST.get("adr_sel")
+    if not adresse_id:
+        
+        message = "Vous devez choisir une adresse!!"
+        return redirect("/compte/commander/")
     adresse = models.Adresse.objects.filter(id=adresse_id).first()
     print(adresse)
     data_dict = {}

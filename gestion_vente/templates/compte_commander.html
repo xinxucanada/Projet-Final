@@ -7,7 +7,7 @@ commander
     <div class="commande_review w">
     <form action="/compte/caisse/" method="post">
         {% csrf_token %}
-        <h1><input type="submit" value="Commande Confirmer" id="confirmer" ></h1>
+        <h1><input type="submit" value="Commande Confirmer" id="confirmer" ><span style="color: red;">{{ message }}</span></h1>
     <div class="adresses" style="float: left; margin-left: 0;">
         {% for a in adresses %}
         <div class="adresse">
