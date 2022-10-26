@@ -4,10 +4,35 @@ commander
 {% endblock %}
 {% block content %}
 <div class="w">
-<table border="1px">
+
+    <div class="adresses" style="float: left; margin-left: 0;">
+        {% for a in adresses %}
+        <div class="adresse">
+            <ul>
+                <li>{{ a.adresse }}</li>
+                <li>{{ a.ville }}, {{ a.codePostale }}, {{ a.get_province_display }}</li>
+                <button><a href="/adresse/{{ a.id }}/modifier/">Modifier</a></button>
+                <a href="/adresse/{{ a.id }}/delete/">delete</a>
+            </ul>
+        </div>
+        {% endfor %}
+        <div class="adresseajouter">
+            <button><a href="/adresse/creer/">+</a></button>
+        </div>
+    </div>
+
+    <div class="commander">
+    <table>
+    <colgroup>
+        <col>
+        <col>
+        <col style="width: 30px; text-align: right;">
+        <col style="width:30px;">
+        <col style="width: 50px; font-weight: bold;">
+      </colgroup>
     <thead>
         <th colspan="2">produit</th>
-        <th>qty</th>
+        <th>quantite</th>
         <th>prixUnitaire</th>
         <th>subTotal</th>
     </thead>
@@ -26,19 +51,22 @@ commander
     </tbody>
     <tfoot>
         <tr>
-            <th></th>
-            <th></th>
-            <th >
+            
+            <th colspan="3" style="text-align: right;">
                 Montant Total
             </th>
-            <th colspan="2">
-                {{ montant }}
+            <th colspan="2" style="font-size: 20px; font-weight: bold;">
+                {{ montant }}$
             </th>
         </tr>
+        <tr>
+            <td><a href="/compte/caisse/">Commander</a></td>
+        </tr>
     </tfoot>
-    </form>
+    
 </table>
-<a href="/compte/caisse/">Commander</a>
+</div>
+
 </div>
 {% endblock %}
 
