@@ -3,16 +3,18 @@
 commander
 {% endblock %}
 {% block content %}
-<div class="w">
 
+    <div class="commande_review w">
+    <form action="/compte/caisse/" method="post">
+        {% csrf_token %}
+        <h1><input type="submit" value="Commande Confirmer" id="confirmer" ></h1>
     <div class="adresses" style="float: left; margin-left: 0;">
         {% for a in adresses %}
         <div class="adresse">
             <ul>
-                <li>{{ a.adresse }}</li>
+                <li>{{ a.adresse }}<span style="float: right;"><input type="radio" name="adr_sel" value="{{ a.id }}" required="required"></span></li>
                 <li>{{ a.ville }}, {{ a.codePostale }}, {{ a.get_province_display }}</li>
                 <button><a href="/adresse/{{ a.id }}/modifier/">Modifier</a></button>
-                <a href="/adresse/{{ a.id }}/delete/">delete</a>
             </ul>
         </div>
         {% endfor %}
@@ -24,16 +26,16 @@ commander
     <div class="commander">
     <table>
     <colgroup>
-        <col>
-        <col>
-        <col style="width: 30px; text-align: right;">
-        <col style="width:30px;">
-        <col style="width: 50px; font-weight: bold;">
+        <col style="text-align: right">
+        <col style="text-align: right">
+        <col style="width: 30px; text-align: right">
+        <col style="width:30px;text-align: right">
+        <col style="width: 50px; font-weight: bold; text-align: right">
       </colgroup>
     <thead>
         <th colspan="2">produit</th>
         <th>quantite</th>
-        <th>prixUnitaire</th>
+        <th>prix</th>
         <th>subTotal</th>
     </thead>
     
@@ -59,15 +61,18 @@ commander
                 {{ montant }}$
             </th>
         </tr>
-        <tr>
+        <!-- <tr>
             <td><a href="/compte/caisse/">Commander</a></td>
-        </tr>
+        </tr> -->
     </tfoot>
     
 </table>
 </div>
-
+    
+    
+</form>
 </div>
+
 {% endblock %}
 
 <!-- <!DOCTYPE html>

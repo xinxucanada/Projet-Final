@@ -12,7 +12,8 @@ from django.utils.safestring import mark_safe
 
 m = Magasin()
 panier_visiteur = Panier("VISITEUR")
-
+commande_liste = []
+commande_montant = 0
 # nav barre change selon le situation de compte connexion
 def get_nom():
     nom = '<a href="/compte/login/">se connecter</a></span></li></ul>'
@@ -220,7 +221,6 @@ def compte_info(request):
     nom = get_nom()
     nbr = get_nbr()
     profile = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
-    print(profile.nomCompte)
     adresses = models.Adresse.objects.filter(Compte_id=profile.id)
     
     return render(request, "compte_info.html", {"nom": nom, "nbr": nbr, "profile": profile, "adresses":adresses})
@@ -266,24 +266,34 @@ def compte_commander(request):
     data_dict = {}
     data_dict["nomCompte"] = m.client.compte
     liste_panier = models.LignePanier.objects.filter(**data_dict)
-    liste = []
-    montant = 0
+    commande_liste = []
+    commande_montant = 0
+    profile = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
+    adresses = models.Adresse.objects.filter(Compte_id=profile.id)
     # puisque la base de donnee 'ligne panier n'a pas d'attributs photo, prix, subtotal et montant total no plus'
     # on cree une liste pour afficher toutes les informations
     for obj in liste_panier:
         # avec 'foreignKey' fonctin, on peut avoir lienPhoto et prixUnitair
         photo = mark_safe(f'<img src="{obj.idProduit.lienPhoto}" alt="" style="width:20px;height:20px;">')
         line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite*obj.idProduit.prixUnitair]
-        liste.append(line)
-        montant += obj.quantite*obj.idProduit.prixUnitair
-    return render(request, "compte_commander.html", {"liste": liste, "nom": nom, "montant":montant})
+        commande_liste.append(line)
+        commande_montant += obj.quantite*obj.idProduit.prixUnitair
+    return render(request, "compte_commander.html", {"liste": commande_liste, "nom": nom, "montant": commande_montant, "adresses": adresses})
 
 def compte_caisse(request):
+    adresse_id = request.POST.get("adr_sel")
+    adresse = models.Adresse.objects.filter(id=adresse_id).first()
+    print(adresse)
     data_dict = {}
     data_dict["nomCompte"] = m.client.compte
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     for row in liste_panier:
         inventaire_deduct(row.idProduit, row.quantite)
+    models.Commande.objects.create(nomCompte_id=m.client.compte, adresseLivre=adresse, montant=commande_montant )
+    id_commande = models.Commande.objects.filter(nomCompte_id=m.client.compte).last()
+    # liste_panier = models.LignePanier.objects.filter(**data_dict)
+    for ligne in commande_liste:
+        models.LigneCommande.objects.create(idCommande_id=id_commande, produit=ligne[1], prixUnitair=ligne[3], quantite=ligne[2])
     models.LignePanier.objects.filter(**data_dict).delete()
     return redirect("home")  
 

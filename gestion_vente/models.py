@@ -50,7 +50,7 @@ class Adresse(models.Model):
     province = models.CharField(verbose_name='province', max_length=3, choices=province_choix)
 
     def __str__(self) -> str:
-        return self.adresse + self.ville + self.province + self.codePostale
+        return self.adresse + " " + self.ville + " " + self.province + " " + self.codePostale
 
 class Produit(models.Model):
 
@@ -86,15 +86,15 @@ class Commande(models.Model):
     nomCompte = models.ForeignKey(verbose_name='id compte',to="CompteUser", to_field="nomCompte",on_delete= models.CASCADE)
     adresseLivre = models.CharField(verbose_name='ville', max_length=100)
     dateCommande = models.DateField(verbose_name='Date de commande', auto_now_add=True)
-    motant = models.DecimalField(verbose_name="motant", max_digits=10, decimal_places=2)
-    taxe = models.DecimalField(verbose_name="taxe", max_digits=10, decimal_places=2)
-    fraisTransport = models.DecimalField(verbose_name="frais de transport", max_digits=10, decimal_places=2)
+    montant = models.DecimalField(verbose_name="motant", max_digits=10, decimal_places=2)
+    # taxe = models.DecimalField(verbose_name="taxe", max_digits=10, decimal_places=2)
+    # fraisTransport = models.DecimalField(verbose_name="frais de transport", max_digits=10, decimal_places=2)
 
 
 class LigneCommande(models.Model):
 
     idCommande = models.ForeignKey(verbose_name='id commande',to="Commande", to_field="id",on_delete= models.CASCADE)
-    Produit = models.ForeignKey(verbose_name='produit',to="Produit", to_field="id",on_delete= models.CASCADE)
+    produit = models.ForeignKey(verbose_name='produit',to="Produit", to_field="id",on_delete= models.CASCADE)
     prixUnitair = models.DecimalField(verbose_name="Prix Unitaire", max_digits=10, decimal_places=2, default=0)
     quantite = models.IntegerField(verbose_name="quantite")
 
