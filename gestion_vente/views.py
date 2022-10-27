@@ -50,6 +50,13 @@ class CompteModelForm(forms.ModelForm):
             # change input type a password
             "motDePasse": forms.PasswordInput(), 
         }
+# citer fonction pour donner la classe à chaque input 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            # if name == "password":
+            #     continue
+            field.widget.attrs = {"class": "compte_creer_input", "placeholder": field.label}
 
 # verifier si le 'user name' ou telephone ou courriel deja inscrit        
     def clean_telephone(self):

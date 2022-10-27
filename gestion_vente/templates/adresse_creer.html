@@ -3,7 +3,8 @@
 Adresse Creer
 {% endblock %}
 {% block content %}
-<h1>Creez votre adresse</h1>
+<div class="w">
+    <h1>Creez votre adresse</h1>
     <div>
         <form method="post" novalidate>
             {% csrf_token %}
@@ -15,10 +16,12 @@ Adresse Creer
                 <span style="color: red;">{{field.errors.0}}</span>
               </div>
               {% endfor %} 
-              <button type="submit" class="btn btn-primary">CREER</button>
+              <button type="submit" class="btn">CREER</button>
           </form>
 
     </div>
+</div>
+
 {% endblock %}
 
 
