@@ -1,6 +1,3 @@
-from ast import Delete, Global
-from pyexpat import model
-import re
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from gestion_vente import models
@@ -20,7 +17,7 @@ def get_nom():
     
     if m.client:
         nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</span></li><ul>\
-                <li><a href="/compte/info/">profile</a></li><li><a href="">mes commandes</a></li>\
+                <li><a href="/compte/info/">profile</a></li><li><a href="/compte/histoire/">mes commandes</a></li>\
                 <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
     nom = mark_safe(nom)
     return nom
@@ -226,8 +223,35 @@ def compte_info(request):
     
     return render(request, "compte_info.html", {"nom": nom, "nbr": nbr, "profile": profile, "adresses":adresses})
 
+def compte_histoire(request):
+    models.Commande.objects.filter(id__lte=3).delete()
+    if not m.client:
+        return redirect("/compte/login/")
+    nom = get_nom()
+    nbr = get_nbr()
+    histoire_commandes = []
+    commandes = models.Commande.objects.filter(nomCompte_id=m.client.compte).order_by("-dateCommande")
+    for commande in commandes:
+        idCommande = commande.id
+        linges_commande = models.LigneCommande.objects.filter(idCommande_id=idCommande)
+        affiche_plus = mark_safe(f"<button id='btn' style='display:none'>afficher plus</button>")
+        lignes = None
+        lignes5 = None
+        if len(linges_commande) > 5:
+            lignes = linges_commande[:5]
+            affiche_plus = mark_safe(f"<button id='btn'>afficher plus</button>")
+            lignes5 = linges_commande[5:]
+        histoire_commandes.append([commande.dateCommande, commande.adresseLivre, commande.montant, lignes, idCommande, affiche_plus, lignes5])
+    return render(request, "compte_histoire.html", {"nom": nom, "nbr": nbr, "commandes": histoire_commandes})
+
+def recommander(request, nid):
+    ligne_commandes = models.LigneCommande.objects.filter(idCommande_id=nid)
+    for ligne in ligne_commandes:
+        models.LignePanier.objects.create(nomCompte_id=m.client.compte, idProduit=ligne.produit, quantite=ligne.quantite)
+    return redirect("/compte/panier/")
 
 def compte_panier(request):
+    
     nom = get_nom()
     nbr = get_nbr()
     data_dict = {}
@@ -268,41 +292,43 @@ def compte_commander(request):
     data_dict = {}
     data_dict["nomCompte"] = m.client.compte
     liste_panier = models.LignePanier.objects.filter(**data_dict)
-    commande_liste = []
-    commande_montant = 0
+    m.commande_liste = []
+    m.commande_montant = 0
+    # m.message = ""
     profile = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
     adresses = models.Adresse.objects.filter(Compte_id=profile.id)
     # puisque la base de donnee 'ligne panier n'a pas d'attributs photo, prix, subtotal et montant total no plus'
     # on cree une liste pour afficher toutes les informations
     for obj in liste_panier:
         # avec 'foreignKey' fonctin, on peut avoir lienPhoto et prixUnitair
-        photo = mark_safe(f'<img src="{obj.idProduit.lienPhoto}" alt="" style="width:20px;height:20px;">')
+        photo = mark_safe(f'<img src="{obj.idProduit.lienPhoto}" alt="" style="width:30px;height:30px;">')
         line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite*obj.idProduit.prixUnitair]
-        commande_liste.append(line)
-        commande_montant += obj.quantite*obj.idProduit.prixUnitair
-    return render(request, "compte_commander.html", {"liste": commande_liste, "nom": nom, "montant": commande_montant, "adresses": adresses, "message": message})
+        m.commande_liste.append(line)
+        m.commande_montant += obj.quantite*obj.idProduit.prixUnitair
+    return render(request, "compte_commander.html", {"liste": m.commande_liste, "nom": nom, "montant": m.commande_montant, "adresses": adresses, "message": m.message})
 
 def compte_caisse(request):
-    global message
-    message = ""
     adresse_id = request.POST.get("adr_sel")
     if not adresse_id:
-        
-        message = "Vous devez choisir une adresse!!"
+        m.message = "Vous devez choisir une adresse!!"
         return redirect("/compte/commander/")
+    else:
+        m.message = ""
     adresse = models.Adresse.objects.filter(id=adresse_id).first()
-    print(adresse)
+    # print(adresse)
     data_dict = {}
     data_dict["nomCompte"] = m.client.compte
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     for row in liste_panier:
         inventaire_deduct(row.idProduit, row.quantite)
-    models.Commande.objects.create(nomCompte_id=m.client.compte, adresseLivre=adresse, montant=commande_montant )
-    id_commande = models.Commande.objects.filter(nomCompte_id=m.client.compte).last()
+    models.Commande.objects.create(nomCompte_id=m.client.compte, adresseLivre=adresse, montant=m.commande_montant )
+    id_commande = models.Commande.objects.filter(nomCompte_id=m.client.compte).last().id
     # liste_panier = models.LignePanier.objects.filter(**data_dict)
-    for ligne in commande_liste:
+    for ligne in m.commande_liste:
         models.LigneCommande.objects.create(idCommande_id=id_commande, produit=ligne[1], prixUnitair=ligne[3], quantite=ligne[2])
     models.LignePanier.objects.filter(**data_dict).delete()
+    m.commande_montant = 0
+    m.commande_liste = []
     return redirect("home")  
 
 # Utiliser recursion pour inventaire  déduction, de date péremption plus proche à plus loins

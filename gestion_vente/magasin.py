@@ -65,7 +65,9 @@ class Magasin:
 
     def __init__(self): 
         self.client = None
-        # self.panier = Panier()
+        self.commande_liste = []
+        self.message =""
+        self.commande_montant = 0
         
 
     def login(self, nom_compte):

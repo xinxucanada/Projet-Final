@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block title %}
+Histoire des commandes
+{% endblock %}
+{% block content %}
+<div class="w">
+
+       
+    <div class="commandes ">
+        {% for commande in commandes %}
+        <div class="commande" id="c{{ commande.4 }}">
+            <div class="commande_resume">
+                <ul>
+                    <li>Date commande: {{ commande.0}}</li>
+                    <li>Adresse: {{ commande.1 }}</li>
+                    <li>Montant total: {{ commande.2 }}$</li>
+                </ul>
+                <h3><a href="/commande/{{ commande.4 }}/recommande/">Acheter de nouveau</a></h3>
+            </div>
+            <div class="commande_detail">
+                {{ commande.5 }}
+                <table style="text-align: right;">
+                    <tr>
+                        <td>Produit</td>
+                        <td>Prix</td>
+                        <td>Quantite</td>
+                    </tr>
+                    <tbody>
+                    {% for ligne in commande.3 %}
+                    <tr>
+                        <td>{{ ligne.produit }}</td>
+                        <td>{{ ligne.prixUnitair }}$</td>
+                        <td>{{ ligne.quantite }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tbody  class="plus5">
+                    {% if commande.6 %}
+                    {% for ligne in commande.6 %}
+                    <tr>
+                        <td>{{ ligne.produit }}</td>
+                        <td>{{ ligne.prixUnitair }}$</td>
+                        <td>{{ ligne.quantite }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                    </tbody >
+                </table>
+                
+            </div>
+        </div>
+        {% endfor %}
+       
+    </div>
+</div>
+<script>
+    let commandes = document.querySelectorAll(".commande");
+    let plus5s = document.querySelectorAll(".plus5");
+    let btns = document.querySelectorAll("#btn");
+    console.log(commandes);
+    console.log(plus5s);
+    console.log(btns);
+    
+    for (let i = 0; i < commandes.length; i++) {
+        btns[i].onclick = function() {
+            console.log(this);
+            for (let j = 0; j < commandes.length; j++){
+                commandes[j].style.height = "150px";
+                plus5s[j].style.display = "none";
+            }
+            commandes[i].style.height = "350px";
+            plus5s[i].style.display = "block";
+        }
+    }
+
+</script>
+{% endblock %}

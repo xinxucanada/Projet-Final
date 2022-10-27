@@ -11,6 +11,7 @@ urlpatterns = [
     path("compte/deconnecter/", views.compte_deconnecter, name="compte_deconnecter"),
     path("compte/<int:nid>/delete/", views.compte_delete, name="compte_delete"),
     path("compte/commander/", views.compte_commander, name="compte_commander"),
+    path("compte/histoire/", views.compte_histoire, name="compte_histoire"),
     path("adresse/creer/", views.adresse_creer, name="adresse_creer"),
     path("adresse/<int:nid>/modifier/", views.adresse_modifier, name="adresse_modifier"),
     path("adresse/<int:nid>/delete/", views.adresse_delete, name="adresse_delete"),
@@ -25,6 +26,7 @@ urlpatterns = [
     path("compte/caisse/", views.compte_caisse, name="compte_caisse"),
     path("compte/info/", views.compte_info, name="compte_info"),
     path("compte/modifier/", views.compte_modifer, name="compte__modifer"),
+    path("commande/<int:nid>/recommande/", views.recommander, name="recommander"),
 
 
 

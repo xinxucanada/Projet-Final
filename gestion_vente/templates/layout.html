@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
+    <link rel="icon" type="image/x-icon" href="/static/imgs/logo.png" >
+    <!-- <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
     bouvet/favicon/_/attachment/inline/dd170092-656a-4895-8550-daac0c4b0aa0:2df7625
-    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" >
+    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" > -->
     <title>{% block title %}{% endblock %}</title>
     <style>
         * {
@@ -132,6 +133,16 @@
             margin-top: 50px;
 
         }
+        /* .monPanier {
+            float: left;
+            width: 300px;
+            background-color: rgb(231,231,231);
+            margin-top: 50px;
+        } */
+
+        .plus5 {
+            display: none;
+        }
         .profile dt {
             text-align: left;
             margin-left: 10px;
@@ -147,7 +158,7 @@
             margin-left: 150px;
             border: none;
         }
-        .adresses {
+        .adresses, .commandes {
             float: left;
             width: 800px;
             /* background-color: rgb(192, 177, 177); */
@@ -160,6 +171,20 @@
             padding: 30px;
             margin-top: 10px;
             border: 2px solid rgb(5, 5, 5);
+        }
+        .commande {
+            width: 100%;
+            height: 150px;
+            background-color: rgb(143, 160, 129);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 10px;
+            border: 2px solid rgb(5, 5, 5);
+        }
+        .commande_resume, .commande_detail {
+            float: left;
+            width: 400px;
+            height: 100%;
         }
         .adresse button {
             margin-left: 300px;
