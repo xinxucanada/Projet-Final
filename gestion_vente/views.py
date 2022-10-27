@@ -245,9 +245,12 @@ def compte_histoire(request):
     return render(request, "compte_histoire.html", {"nom": nom, "nbr": nbr, "commandes": histoire_commandes})
 
 def recommander(request, nid):
+    if not m.client:
+        return redirect("home")
     ligne_commandes = models.LigneCommande.objects.filter(idCommande_id=nid)
     for ligne in ligne_commandes:
-        models.LignePanier.objects.create(nomCompte_id=m.client.compte, idProduit=ligne.produit, quantite=ligne.quantite)
+        m.client.panier.ajouter(ligne.produit.id, ligne.quantite)
+        # models.LignePanier.objects.create(nomCompte_id=m.client.compte, idProduit=ligne.produit, quantite=ligne.quantite)
     return redirect("/compte/panier/")
 
 def compte_panier(request):
