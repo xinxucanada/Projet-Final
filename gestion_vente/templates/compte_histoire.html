@@ -33,17 +33,7 @@ Histoire des commandes
                         <td>{{ ligne.quantite }}</td>
                     </tr>
                     {% endfor %}
-                    </tbody>
-                    <tbody  class="plus5">
-                    {% if commande.6 %}
-                    {% for ligne in commande.6 %}
-                    <tr>
-                        <td>{{ ligne.produit }}</td>
-                        <td>{{ ligne.prixUnitair }}$</td>
-                        <td>{{ ligne.quantite }}</td>
-                    </tr>
-                    {% endfor %}
-                    {% endif %}
+                    
                     </tbody >
                 </table>
                 
@@ -55,21 +45,21 @@ Histoire des commandes
 </div>
 <script>
     let commandes = document.querySelectorAll(".commande");
-    let plus5s = document.querySelectorAll(".plus5");
+    // let plus5s = document.querySelectorAll(".plus5");
     let btns = document.querySelectorAll("#btn");
-    console.log(commandes);
-    console.log(plus5s);
-    console.log(btns);
+    // console.log(commandes);
+    // console.log(plus5s);
+    // console.log(btns);
     
     for (let i = 0; i < commandes.length; i++) {
         btns[i].onclick = function() {
             console.log(this);
             for (let j = 0; j < commandes.length; j++){
                 commandes[j].style.height = "150px";
-                plus5s[j].style.display = "none";
+                // plus5s[j].style.display = "none";
             }
-            commandes[i].style.height = "350px";
-            plus5s[i].style.display = "block";
+            commandes[i].style.height = "300px";
+            // plus5s[i].style.display = "block";
         }
     }
 

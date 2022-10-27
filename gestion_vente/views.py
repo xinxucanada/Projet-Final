@@ -242,13 +242,13 @@ def compte_histoire(request):
         idCommande = commande.id
         linges_commande = models.LigneCommande.objects.filter(idCommande_id=idCommande)
         affiche_plus = mark_safe(f"<button id='btn' style='display:none'>afficher plus</button>")
-        lignes = None
-        lignes5 = None
-        if len(linges_commande) > 5:
-            lignes = linges_commande[:5]
+        # lignes = None
+        # lignes5 = None
+        if len(linges_commande) > 7:
+            # lignes = linges_commande[:5]
             affiche_plus = mark_safe(f"<button id='btn'>afficher plus</button>")
-            lignes5 = linges_commande[5:]
-        histoire_commandes.append([commande.dateCommande, commande.adresseLivre, commande.montant, lignes, idCommande, affiche_plus, lignes5])
+            # lignes5 = linges_commande[5:]
+        histoire_commandes.append([commande.dateCommande, commande.adresseLivre, commande.montant, linges_commande, idCommande, affiche_plus])
     return render(request, "compte_histoire.html", {"nom": nom, "nbr": nbr, "commandes": histoire_commandes})
 
 def recommander(request, nid):
