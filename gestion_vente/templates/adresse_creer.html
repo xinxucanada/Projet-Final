@@ -3,8 +3,9 @@
 Adresse Creer
 {% endblock %}
 {% block content %}
-<div class="w">
-    <h1>Creez votre adresse</h1>
+<div class="w compte_creer">
+    <fieldset>
+        <legend>Creez votre adresse</legend>
     <div>
         <form method="post" novalidate>
             {% csrf_token %}
@@ -20,6 +21,8 @@ Adresse Creer
           </form>
 
     </div>
+    </fieldset>
+    
 </div>
 
 {% endblock %}

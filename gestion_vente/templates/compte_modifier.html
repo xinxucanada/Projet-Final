@@ -3,7 +3,25 @@
 Compte Modifier
 {% endblock %}
 {% block content %}
-<div >
+<div class="compte_creer w">
+    <fieldset>
+        <legend>Inscription</legend>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div >
+               <label >{{field.label}}</label>
+                {{field}}
+                <span style="color: red;">{{field.errors.0}}</span>
+              </div>
+              {% endfor %} 
+              <button type="submit" class="btn">CREER</button>
+          </form>
+    </fieldset>
+    
+
+</div>
+<!-- <div >
     <form method="post" novalidate>
         {% csrf_token %}
         {% for field in form %}
@@ -15,5 +33,5 @@ Compte Modifier
           {% endfor %} 
           <button type="submit" >confirmer</button>
       </form>
-</div>
+</div> -->
 {% endblock %}

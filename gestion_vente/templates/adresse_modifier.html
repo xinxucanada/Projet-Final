@@ -3,17 +3,25 @@
 Adresse Modifier
 {% endblock %}
 {% block content %}
-<div >
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {% for field in form %}
-        <div >
-           <label for="">{{field.label}}</label>
-            {{field}}
-            <span style="color: red;">{{field.errors.0}}</span>
-          </div>
-          {% endfor %} 
-          <button type="submit" >confirmer</button>
-      </form>
+<div class="w compte_creer">
+    <fieldset>
+        <legend>Creez votre adresse</legend>
+    <div>
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div >
+               <label >{{field.label}}</label>
+                {{field}}
+                <span style="color: red;">{{field.errors.0}}</span>
+              </div>
+              {% endfor %} 
+              <button type="submit" class="btn">CREER</button>
+          </form>
+
+    </div>
+    </fieldset>
+    
 </div>
 {% endblock %}

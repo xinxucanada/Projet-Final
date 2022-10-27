@@ -3,21 +3,27 @@
 Commander en ligne
 {% endblock %}
 {% block content %}
-<div class="shop">
-    {% for obj in liste %}
-    <div class="produit">
-        <img src="{{ obj.lienPhoto}}" alt="">
-        <h5>{{ obj.nomProduit }}</h5>
-        <h4>${{ obj.prixUnitair }}</h4>
-        <form action="" method="post">
-            {% csrf_token %}   
-        <input type="number" min="0" name="{{ obj.id}}" value="0" required="required">
-        <input type="submit" value="ajouter au panier">
-        </form>
+<div class="w">
+    <div class="produit_type">
+
     </div>
-    {% endfor %}
-    
+    <div class="shop">
+        {% for obj in liste %}
+        <div class="produit">
+            <img src="{{ obj.lienPhoto}}" alt="">
+            <h5>{{ obj.nomProduit }}</h5>
+            <h4>${{ obj.prixUnitair }}</h4>
+            <form action="" method="post">
+                {% csrf_token %}   
+            <input type="number" min="0" name="{{ obj.id}}" value="0" required="required">
+            <input type="submit" value="ajouter au panier">
+            </form>
+        </div>
+        {% endfor %}
+        
+    </div>
 </div>
+
 {% endblock %}
 <!-- <!DOCTYPE html>
 <html lang="en">

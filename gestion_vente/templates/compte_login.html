@@ -1,4 +1,35 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block title %}
+Se Connecter
+{% endblock %}
+{% block content %}
+<div class="compte_creer w">
+    <fieldset>
+        <legend>Connectez-vous</legend>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div >
+                <label >Nom du compte / Telephone/ Courriel</label><br>
+                 <input type="text" name ="data_login"><br>
+                 <label >Mot de passe</label><br>
+                 <input type="password" name="pwd" id=""><br>
+                 <span style="color: red;">{{ msg_error}}</span>
+               </div>
+            <!-- {% for field in form %}
+            <div >
+               <label >{{field.label}}</label>
+                {{field}}
+                <span style="color: red;">{{field.errors.0}}</span>
+              </div>
+              {% endfor %}  -->
+              <button type="submit" class="btn">CREER</button>
+          </form>
+    </fieldset>
+    <div class="compte_creer"><h2><a href="/compte/creer/">creer un compte</a></h2></div>
+
+</div>
+{% endblock %}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +50,9 @@
   
 </head>
 <body>
-    <div class="login">
+     -->
+
+    <!-- <div class="login">
         
         <form method="post" novalidate>
             {% csrf_token %}
@@ -35,6 +68,6 @@
               <input type="submit" value="Conneter">
           </form>
     </div>
-    <div><a href="/compte/creer/">creer un compte</a></div>
+    <div><a href="/compte/creer/">creer un compte</a></div> -->
 </body>
 </html>
