@@ -31,7 +31,10 @@ Commander en ligne
             <form action="" method="post">
                 {% csrf_token %}   
             <input type="number" min="0" name="{{ obj.id}}" value="0" required="required">
-            <input type="submit" value="ajouter au panier">
+            <!-- <input type="submit" value="ajouter au panier"> -->
+            <button class="btn_acheter" type="submit">
+                <img class="img_char" src="/static/imgs/chario.PNG">
+            </button>
             </form>
         </div>
         {% endfor %}

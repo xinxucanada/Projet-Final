@@ -112,21 +112,41 @@
             margin-left: 10px;
             width: 800px;
             height: 1600px;
-            background-color: skyblue;
+            background-color: rgb(226, 233, 236);
         }
         .produit {
             float: left;
             width: 150px;
             height: 240px;
-            background-color: grey;
-            border: 1px solid pink;
+            /* background-color: grey; */
+            /* border: 1px solid pink; */
+            text-align: center;
+            margin-left: 5px;
+            margin-bottom: 5px;
+            box-shadow: 3px 3px 3px rgba(0,0,0, 0.3);
         }
         .produit img {
             width: 100%;
             height: 60%;
         }
         .produit input {
-            width: 50%;
+            text-align: right;
+            width: 70%;
+            height: 25px;
+            font-size: 20px;
+            border: 0;
+        }
+        .produit .btn_acheter{
+            background-color: transparent;
+            border:none
+        }
+        .produit .btn_acheter:active {
+            background-color: white;
+            transform: translateY(6px);
+        }
+        .produit .img_char {
+            width: 25px;
+            height: 25px;
         }
         a {
             text-decoration: none;
