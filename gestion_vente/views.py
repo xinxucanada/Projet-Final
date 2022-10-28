@@ -265,6 +265,7 @@ def compte_panier(request):
     nom = get_nom()
     nbr = get_nbr()
     data_dict = {}
+    
     # mettre toutes les conditions dans un dico, comme nom du compte
     data_dict["nomCompte"] = m.client.compte if m.client else "VISITEUR"
     # liste = models.LignePanier.objects.filter(**data_dict)
@@ -354,9 +355,18 @@ def inventaire_deduct(idProduit, quantite):
 
 def shopping(request):
     nom = get_nom()
-    nbr = get_nbr()   
-    liste = models.Produit.objects.all()
+    nbr = get_nbr()
+    data_dict = {} 
     if request.method == "GET":
+        type = request.GET.get("type","")
+        nomProduit = request.GET.get("nomProduit","")
+        if type:
+            data_dict["typeProduit"] = type 
+        if nomProduit:
+            print(nomProduit)
+            data_dict["nomProduit__contains"] = nomProduit
+        liste = models.Produit.objects.filter(**data_dict)
+    
         return render(request, "shopping.html", {"liste": liste, "nom":nom, "nbr": nbr})
     for i in range(liste.first().id, liste.last().id + 1):
         if request.POST.get(str(i)):

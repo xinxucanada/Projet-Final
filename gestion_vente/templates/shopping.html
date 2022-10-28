@@ -6,15 +6,23 @@ Commander en ligne
 <div class="w">
     <div class="produit_type">
         <ul>
-            <li><a href="">fruit legume</a></li>
-            <li><a href="">pain</a></li>
-            <li><a href="">produit laitier et oeufs</a></li>
-            <li><a href="">surgelés</a></li>
-            <li><a href="">viande</a></li>
-            <li><a href="">autres</a></li>
+            <li><a href="/compte/shopping/">Tous les produits</a></li>
+            <li><a href="?type=fruit_legume">fruit legume</a></li>
+            <li><a href="?type=pain">pain</a></li>
+            <li><a href="?type=laitier_et_oeufs">produit laitier et oeufs</a></li>
+            <li><a href="?type=surgeles">surgelés</a></li>
+            <li><a href="?type=viande">viande</a></li>
+            <li><a href="?type=autres">autres</a></li>
         </ul>
     </div>
+    
     <div class="shop">
+        <div class="search">
+            <form method="get">
+            <input type="text" value="" name="nomProduit">
+            <button type="submit"><img src="/static/imgs/btn.png" alt=""></button>
+            </form>
+        </div>
         {% for obj in liste %}
         <div class="produit">
             <img src="{{ obj.lienPhoto}}" alt="">
