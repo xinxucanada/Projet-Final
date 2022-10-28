@@ -19,7 +19,7 @@ Commander en ligne
     <div class="shop">
         <div class="search">
             <form method="get">
-            <input type="text" value="" name="nomProduit">
+            <input type="text" value="{{ nomProduit }}" name="nomProduit">
             <button type="submit"><img src="/static/imgs/btn.png" alt=""></button>
             </form>
         </div>
@@ -33,7 +33,7 @@ Commander en ligne
             <input type="number" min="0" name="{{ obj.id}}" value="0" required="required">
             <!-- <input type="submit" value="ajouter au panier"> -->
             <button class="btn_acheter" type="submit">
-                <img class="img_char" src="/static/imgs/chario.PNG">
+                <img class="img_char" src="/static/imgs/chario.png">
             </button>
             </form>
         </div>

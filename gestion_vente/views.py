@@ -9,8 +9,8 @@ from django.utils.safestring import mark_safe
 
 m = Magasin()
 panier_visiteur = Panier("VISITEUR")
-commande_liste = []
-commande_montant = 0
+# commande_liste = []
+# commande_montant = 0
 # nav barre change selon le situation de compte connexion
 def get_nom():
     nom = '<a href="/compte/login/">se connecter</a></span></li></ul>'
@@ -126,7 +126,6 @@ class CompteModifier(CompteModelForm):
         if exists:
             raise ValidationError("courriel deja existe")
         return txt_courriel
-
 
 
 def compte_modifer(request):
@@ -261,11 +260,9 @@ def recommander(request, nid):
     return redirect("/compte/panier/")
 
 def compte_panier(request):
-    
     nom = get_nom()
     nbr = get_nbr()
     data_dict = {}
-    
     # mettre toutes les conditions dans un dico, comme nom du compte
     data_dict["nomCompte"] = m.client.compte if m.client else "VISITEUR"
     # liste = models.LignePanier.objects.filter(**data_dict)
@@ -357,17 +354,24 @@ def shopping(request):
     nom = get_nom()
     nbr = get_nbr()
     data_dict = {} 
+    type = request.GET.get("type","")
+    nomProduit = request.GET.get("nomProduit","")
+    if type:
+        data_dict["typeProduit"] = type 
+    if nomProduit:
+        print(nomProduit)
+        data_dict["nomProduit__contains"] = nomProduit
+    liste = models.Produit.objects.filter(**data_dict)
+    contente = {
+            "liste": liste, 
+            "nom":nom, 
+            "nbr": nbr, 
+            "type": type,
+            "nomProduit": nomProduit
+        }
     if request.method == "GET":
-        type = request.GET.get("type","")
-        nomProduit = request.GET.get("nomProduit","")
-        if type:
-            data_dict["typeProduit"] = type 
-        if nomProduit:
-            print(nomProduit)
-            data_dict["nomProduit__contains"] = nomProduit
-        liste = models.Produit.objects.filter(**data_dict)
-    
-        return render(request, "shopping.html", {"liste": liste, "nom":nom, "nbr": nbr})
+        return render(request, "shopping.html", contente)
+
     for i in range(liste.first().id, liste.last().id + 1):
         if request.POST.get(str(i)):
             qty = int(request.POST.get(str(i)))
@@ -376,8 +380,8 @@ def shopping(request):
                     m.client.panier.ajouter(i, qty)
                 else:
                     panier_visiteur.ajouter(i, qty)
-
-            return redirect("shopping")
+    # return render(request, "shopping.html", contente)
+    return redirect("shopping")
 
 
 
