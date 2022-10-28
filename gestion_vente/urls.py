@@ -27,6 +27,7 @@ urlpatterns = [
     path("compte/info/", views.compte_info, name="compte_info"),
     path("compte/modifier/", views.compte_modifer, name="compte__modifer"),
     path("commande/<int:nid>/recommande/", views.recommander, name="recommander"),
+    path("recette/", views.recette, name="recette"),
 
 
 

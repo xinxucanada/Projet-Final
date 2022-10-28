@@ -45,23 +45,41 @@ Histoire des commandes
 </div>
 <script>
     let commandes = document.querySelectorAll(".commande");
-    // let plus5s = document.querySelectorAll(".plus5");
     let btns = document.querySelectorAll("#btn");
-    // console.log(commandes);
-    // console.log(plus5s);
-    // console.log(btns);
+    let btnMoins = document.querySelectorAll("#btnMoins");
     
-    for (let i = 0; i < commandes.length; i++) {
-        btns[i].onclick = function() {
-            console.log(this);
-            for (let j = 0; j < commandes.length; j++){
-                commandes[j].style.height = "150px";
-                // plus5s[j].style.display = "none";
+    let tables = document.querySelectorAll("table");
+    function affiche_moins () {
+        for (let i = 0; i < tables.length; i++) {
+        let trs = tables[i].querySelectorAll("tr");
+        if (trs.length > 7) {
+            for (let j = 7; j < trs.length; j++) {
+                trs[j].style.display = "none";
             }
-            commandes[i].style.height = "300px";
-            // plus5s[i].style.display = "block";
+        }
         }
     }
+    affiche_moins()
+
+    for (let i = 0; i < commandes.length; i++) {
+        btns[i].onclick = function() {
+            let trs = tables[i].querySelectorAll("tr");
+            let h = trs.length;
+            commandes[i].style.height = 190 + (h - 7) * 18 + "px";
+            for (let k = 0; k < trs.length; k++) {
+                trs[k].style.display = "revert";
+            }
+        }
+        btnMoins[i].onclick = function () {
+            commandes[i].style.height = "150px";
+            let trs = tables[i].querySelectorAll("tr");
+            let h = trs.length;
+            for (let k = 7; k < trs.length; k++) {
+                trs[k].style.display = "none";
+            }
+        }
+    }
+
 
 </script>
 {% endblock %}
