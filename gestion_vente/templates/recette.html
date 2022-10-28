@@ -17,7 +17,7 @@ Recette
                   height: '450',
                   width: '800',
                 //   videoId: video_choix,
-                  videoId: "0mADjFrSVcU",
+                  videoId: "{{recette.video_id}}",
                   events: {
                     'onReady': onPlayerReady,
                     // 'onStateChange': onPlayerStateChange
@@ -35,16 +35,53 @@ Recette
                 // )
             </script>
         </div>
+        <div class="autre">
+          <table>
+            <tr>
+              <td><a href="/?r=0"><img src="/static/imgs/gratin-dauphinois.jpeg" alt=""></a></td>
+              <td><a href="/?r=1"><img src="/static/imgs/rigatoni-cacio-e-pepe.jpeg" alt=""></a></td>
+            </tr>
+            <tr>
+              <td> <a href="/?r=2"><img src="/static/imgs/oeuf-cocotte.jpeg" alt=""></a></td>
+              <td><a href="/?r=3"><img src="/static/imgs/mousse-au-chocolat.jpeg" alt=""></a></td>
+            </tr>
+          </table>
+        </div>
         <h1 class="titre">
-            titre {}
+            {{ recette.nom }}
         </h1>
     </div>
     <div class="down">
         <div class="ingredients">
-
-        </div>
+          <table>
+          
+            <thead>
+                <th colspan="2">produit</th>
+                <th>qty</th>
+            </thead>
+            
+            <tbody>
+                
+                
+                {% for line in liste_ingredients %}
+                <tr>
+                  <td><img src="{{ line.lienPhoto }}" alt=""></td>
+                  <td>{{ line }}</td>
+                  <form action="" method="post">
+                    {% csrf_token %}
+                    <td><input type="number" value=1 name="{{ line.id }}"></td>
+                    <td>
+                      <button class="btn_acheter" type="submit">
+                        <img class="img_char" src="/static/imgs/chario.png">
+                      </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              </div>
         <div class="preparation">
-    
+          {{recette.preparation}}
         </div>
     </div>
 </div>

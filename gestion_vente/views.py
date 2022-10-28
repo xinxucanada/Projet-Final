@@ -4,11 +4,12 @@ from gestion_vente import models
 from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from gestion_vente.magasin import Client, Magasin, Order,Panier
+from gestion_vente.magasin import Client, Magasin, Order,Panier, ListeRecttes
 from django.utils.safestring import mark_safe
 
 m = Magasin()
 panier_visiteur = Panier("VISITEUR")
+recettes = ListeRecttes()
 # commande_liste = []
 # commande_montant = 0
 # nav barre change selon le situation de compte connexion
@@ -384,7 +385,31 @@ def shopping(request):
     return redirect("shopping")
 
 def recette(request):
-    return render(request, "recette.html")
+    nom = get_nom()
+    nbr = get_nbr()
+    if request.method == "get":
+        recette_choix = int(request.GET.get("r"))
+        liste_ingredients = []
+        for ingre in recettes.liste[recette_choix].produits:
+            print(ingre)
+            ingredient = models.Produit.objects.filter(id=ingre).first()
+            print(ingredient.lienPhoto)
+            liste_ingredients.append(ingredient)
+        print(liste_ingredients)
+        content = {
+            "recette": recettes.liste[recette_choix],
+            "nom": nom,
+            "nbr": nbr,
+            "liste_ingredients": liste_ingredients,
+        }
+        # if request.method == "get":
+        return render(request, "recette.html", content)
+    for ingredient in liste_ingredients:
+    # si client changer la quantite, update la base de donnee
+        if request.POST.get(str(ingredient.id)):
+            quantite_n = int(request.POST.get(str(ingredient.id)))
+            models.LignePanier.objects.filter(idProduit=ingredient.id).update(quantite=quantite_n)
+    return redirect("/recette/")
 
 """
 fonctions reservees pour l'administrateur
@@ -415,12 +440,10 @@ class produitModelForm(forms.ModelForm):
         fields = "__all__"
         
 def produit_edit(request, nid):
-
     row_obj = models.Produit.objects.filter(id=nid).first()
     if request.method == "GET":
         form = produitModelForm(instance=row_obj)
         return render(request, "produit_edit.html", {"form": form})
-    
     form = produitModelForm(data=request.POST, instance=row_obj) 
     if form.is_valid():
         form.save()
