@@ -357,10 +357,10 @@ def shopping(request):
     data_dict = {} 
     type = request.GET.get("type","")
     nomProduit = request.GET.get("nomProduit","")
+    print(nomProduit)
     if type:
         data_dict["typeProduit"] = type 
     if nomProduit:
-        print(nomProduit)
         data_dict["nomProduit__contains"] = nomProduit
     liste = models.Produit.objects.filter(**data_dict)
     contente = {
@@ -387,15 +387,18 @@ def shopping(request):
 def recette(request):
     nom = get_nom()
     nbr = get_nbr()
-    if request.method == "get":
-        recette_choix = int(request.GET.get("r"))
-        liste_ingredients = []
-        for ingre in recettes.liste[recette_choix].produits:
-            print(ingre)
-            ingredient = models.Produit.objects.filter(id=ingre).first()
-            print(ingredient.lienPhoto)
-            liste_ingredients.append(ingredient)
-        print(liste_ingredients)
+    recette_choix = int(request.GET.get("r", "0"))
+    liste_ingredients = []
+    for ingre in recettes.liste[recette_choix].produits:
+        print(ingre)
+        ingredient = models.Produit.objects.filter(id=ingre).first()
+        print(ingredient.lienPhoto)
+        liste_ingredients.append(ingredient)
+    print(liste_ingredients)
+
+    if request.method == "GET":
+        
+        
         content = {
             "recette": recettes.liste[recette_choix],
             "nom": nom,
@@ -409,7 +412,7 @@ def recette(request):
         if request.POST.get(str(ingredient.id)):
             quantite_n = int(request.POST.get(str(ingredient.id)))
             models.LignePanier.objects.filter(idProduit=ingredient.id).update(quantite=quantite_n)
-    return redirect("/recette/")
+    return redirect(f"/recette/?r={recette_choix}")
 
 """
 fonctions reservees pour l'administrateur
