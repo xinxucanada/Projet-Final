@@ -5,6 +5,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from gestion_vente.magasin import Client, Magasin, Order,Panier, ListeRecttes
+from gestion_vente.pagination import Pagination
 from django.utils.safestring import mark_safe
 
 m = Magasin()
@@ -250,7 +251,14 @@ def compte_histoire(request):
         if len(linges_commande) > 7:
             affiche_plus = mark_safe(f"<button id='btn'>afficher plus</button> <button id='btnMoins'>afficher moins</button>")
         histoire_commandes.append([commande.dateCommande, commande.adresseLivre, commande.montant, linges_commande, idCommande, affiche_plus])
-    return render(request, "compte_histoire.html", {"nom": nom, "nbr": nbr, "commandes": histoire_commandes})
+    page_obj = Pagination(request, histoire_commandes, page_size=4)
+    content = {
+        "nom": nom, 
+        "nbr": nbr, 
+        "commandes": page_obj.page_queryset,
+        "page_string": page_obj.html(),
+        }
+    return render(request, "compte_histoire.html", content)
 
 # ajouter chaque article de l'ancienne commande dans le panier
 def recommander(request, nid):
@@ -364,8 +372,10 @@ def shopping(request):
         data_dict["nomProduit__contains"] = nomProduit
     # filter la liste des produits selon le type et les mots cles
     liste = models.Produit.objects.filter(**data_dict)
+    page_obj = Pagination(request, liste, page_size=15)
     contente = {
-            "liste": liste, 
+            "liste": page_obj.page_queryset, 
+            "page_string": page_obj.html(),
             "nom":nom, 
             "nbr": nbr, 
             "type": type,
