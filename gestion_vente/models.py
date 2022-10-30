@@ -14,7 +14,7 @@ class CompteUser(models.Model):
     prenom = models.CharField(verbose_name='Prenom', max_length=20)
     telephone = models.CharField(verbose_name='Telephone', max_length=20)
     courriel = models.EmailField(verbose_name='courriel')
-    motDePasse = models.CharField(verbose_name='Mot de passe',  max_length=30)
+    motDePasse = models.CharField(verbose_name='Mot de passe',  max_length=64)
     dateNaissance = models.DateField(verbose_name='Date de naissance', null=True, blank=True)
     gender_choices = (
         (1, 'Homme'),

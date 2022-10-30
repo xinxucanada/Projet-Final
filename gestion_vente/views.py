@@ -5,7 +5,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from gestion_vente.magasin import Client, Magasin, Order,Panier, ListeRecttes
-from gestion_vente.pagination import Pagination
+from gestion_vente.utiles import Pagination, md5
 from django.utils.safestring import mark_safe
 
 m = Magasin()
@@ -43,21 +43,17 @@ class CompteModelForm(forms.ModelForm):
     # mettons que numero de telephon au canada est 10 chiffres
         validators = [RegexValidator(r'^\d{10}$', 'telephone invalide')]
     )
+    # ajouter un attribut pour confirmer mot de passe
+    confirm_mdp = forms.CharField(label="confirmez mot de passe", widget=forms.PasswordInput)
     class Meta:
         model = models.CompteUser
-        fields = ["nomCompte", "nom", "prenom", "telephone", "courriel", "motDePasse", "dateNaissance", "gender"]
+        fields = ["nomCompte", "nom", "prenom", "telephone", "courriel", "motDePasse", "confirm_mdp", "dateNaissance", "gender"]
         widgets = {
             # change input type a password
             "motDePasse": forms.PasswordInput(), 
+            # "confirm_mdp": forms.PasswordInput(attrs={"type": "password"}),
             "dateNaissance": forms.DateInput(attrs={"type": "date"}),
         }
-# citer fonction pour donner la classe à chaque input 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     for name, field in self.fields.items():
-    #         # if name == "password":
-    #         #     continue
-    #         field.widget.attrs = {"class": "compte_creer_input", "placeholder": field.label}
 
 # verifier si le 'user name' ou telephone ou courriel deja inscrit        
     def clean_telephone(self):
@@ -86,8 +82,16 @@ class CompteModelForm(forms.ModelForm):
         txt_motDePasse = self.cleaned_data["motDePasse"]
         if len(txt_motDePasse) < 8:
             raise ValidationError("mot de passe doit avoir plus que 8 chars")
+        # utiliser md5 pour cacher mot de passe dans la base de donnee
+        return md5(txt_motDePasse)
 
-        return txt_motDePasse
+    def clean_confirm_mdp(self):
+        txt_motDePasse = self.cleaned_data["motDePasse"]
+        txt_confirm_mdp = md5(self.cleaned_data["confirm_mdp"])
+        # verifier si les mots de passe sont pareils
+        if txt_confirm_mdp != txt_motDePasse:
+            raise ValidationError("mot de passe pas pareil")
+        return txt_confirm_mdp
 
 def compte_creer(request):
 
