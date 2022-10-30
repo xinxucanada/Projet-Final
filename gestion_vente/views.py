@@ -49,6 +49,7 @@ class CompteModelForm(forms.ModelForm):
         widgets = {
             # change input type a password
             "motDePasse": forms.PasswordInput(), 
+            "dateNaissance": forms.DateInput(attrs={"type": "date"}),
         }
 # citer fonction pour donner la classe à chaque input 
     # def __init__(self, *args, **kwargs):
