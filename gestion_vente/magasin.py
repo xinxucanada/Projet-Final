@@ -1,15 +1,5 @@
 from gestion_vente import models
 from django.utils.safestring import mark_safe
-# from gestion_vente.views import panier_delete
-
-# class Produit_chose:
-
-#     def __init__(self,id, qty) -> None:
-#         self.id = id
-#         self.qty = qty
-
-#     def __str__(self) -> str:
-#         return f"{self.id},{self.qty}"
 
 class Panier:
     
@@ -33,10 +23,6 @@ class Panier:
         models.LignePanier.objects.filter(nomCompte_id=other.nom_compte).delete()
 
 
-    # def save(self):
-    #     for k, v in self.choses.items():
-    #         models.LignePanier.objects.create(nomCompte_id=self.nom_compte, idProduit_id=k, quantite=v)
-        
 
 class Order:
 
@@ -49,16 +35,10 @@ class Client:
 
     def __init__(self, nom_compte):
         
-        # self.compte = models.CompteUser.objects.filter(nomCompte=nom_compte).first()
         self.compte = nom_compte
+        # composition
         self.panier = Panier(nom_compte)
-        # self.orders = []
-        # if models.LignePanier.objects.filter(nomCompte=nom_compte).exists():
-        #     for ligne in models.LignePanier.objects.filter(nomCompte=nom_compte):
-        #         self.panier.choses[ligne.idProduit.id] = ligne.quantite
-        # if models.Commande.objects.filter(nomCompte=nom_compte).exists():
-        #     for i in models.Commande.objects.filter(nomCompte=nom_compte):
-        #         self.orders.append(Order(i.id))
+        
     def __str__(self) -> str:
         return self.compte
 
@@ -72,6 +52,7 @@ class Magasin:
         
 
     def login(self, nom_compte):
+        # aggrégation
         self.client = Client(nom_compte)
 
 
@@ -153,12 +134,12 @@ m.photo = "mousse_chocolat.png"
 m.video_id = "3v-EEdxhemE"
 m.produits = [134, 125, 122, 138]
 m.preparation = mark_safe("<ol>"\
-                    "<li>1.	Cassez le chocolat en petits morceaux, faites-le fondre au bain-marie,"\
+                    "<li>Cassez le chocolat en petits morceaux, faites-le fondre au bain-marie,"\
                     "puis retirez de feu. Ajoutez le beurre en morceaux, mélangez jusqu'à ce qu’il"\
                     "soit bien fondu Ajoutez les jaunes d’œufs, mélangez.</li><br>"\
-                    "<li>2.	Montez les blancs en neige ferme, ajoutez le sucre glace à la fin."\
+                    "<li>Montez les blancs en neige ferme, ajoutez le sucre glace à la fin."\
                     "Incorporez les blancs délicatement au chocolat fondu.</li><br>"\
-                    "<li>3.	Répartissez la mousse dans 4 coupes individuelles,"\
+                    "<li>Répartissez la mousse dans 4 coupes individuelles,"\
                     "réservez-les au frais jusqu’au moment de servir.</li><br>"\
                 "</ol>"\
                 "<ul>"   \

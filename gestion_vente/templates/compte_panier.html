@@ -3,6 +3,7 @@
 compte panier
 {% endblock %}
 {% block content %}
+{% if liste %}
 <div class="w">
     <div class="left">
         <table >
@@ -37,10 +38,13 @@ compte panier
     <div class="right">
         <button><a href="/compte/commander/" >Aller à la caisse</a></button>
     </div>
-
+    {% else %}
+    <h1 class="w">Votre panier est vide!! </h1>
+    {% endif %}
 </div>
-{% endblock %}
 
+
+{% endblock %}
 
 <!-- <!DOCTYPE html>
 <html lang="en">

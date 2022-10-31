@@ -4,28 +4,36 @@ import copy
 import hashlib
 from django.conf import settings
 
+# Permet de cacher mot de passe dans la base de données
+# Prendre de la vidéo https://www.bilibili.com/video/BV1rT4y1v7uQ?p=79&vd_source=63d29f729d495ccb836eeccb160a82dd
+# Auteur: Peiqi Wu
+# Est utilisé dans la fonction md5()
+
 def md5(data_string):
     obj = hashlib.md5(settings.SECRET_KEY.encode('utf-8'))
     obj.update(data_string.encode('utf-8'))
     return obj.hexdigest()
 
+
+# Permet de séparer les données selon page_size, puis afficher les links des pages
+# Prendre de la vidéo https://www.bilibili.com/video/BV1rT4y1v7uQ?p=74&vd_source=63d29f729d495ccb836eeccb160a82dd
+# Auteur: Peiqi Wu
+# Modifié par Xin pour qu'elle fonnctione pour la liste
+# Est utilisé dans la fonction pagination
+
 class Pagination(object):
     
     def __init__(self, request, queryset, page_size=10, page_param="page", plus=5):
 
-        
         query_dict = copy.deepcopy(request.GET)
         query_dict._mutable = True
         self.page_param = page_param
         self.query_dict = query_dict
-        # query_dict.setlist('page', [11])
-        # print(query_dict.urlencode())
-
+    
         page = request.GET.get(page_param, "1")
         if page.isdecimal():
             page = int(page)
-            # print(page)
-            # print(type(page))
+ 
         else:
             page = 1
         self.page = page
@@ -36,7 +44,8 @@ class Pagination(object):
 
         self.page_queryset = queryset[self.start: self.end]
 
-        # total_count = queryset.count()
+        
+        # total_count = queryset.count() changer la fonction count() à len() pour qu'elle fonction quand l'entree n'est pas un queryset
         total_count = len(queryset)
         total_page_count, div = divmod(total_count, page_size)
         if div:

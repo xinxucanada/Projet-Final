@@ -8,33 +8,7 @@ from gestion_vente.magasin import Client, Magasin, Order,Panier, ListeRecttes
 from gestion_vente.utiles import Pagination, md5
 from django.utils.safestring import mark_safe
 
-m = Magasin()
-panier_visiteur = Panier("VISITEUR")
-recettes = ListeRecttes()
-
-# nav barre change selon le situation de compte connexion
-def get_nom():
-    nom = '<a href="/compte/login/">se connecter</a></span></li></ul>'
-    
-    if m.client:
-        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</span></li><ul>\
-                <li><a href="/compte/info/">profile</a></li><li><a href="/compte/histoire/">mes commandes</a></li>\
-                <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
-    nom = mark_safe(nom)
-    return nom
-
-def get_nbr():
-    nbr = models.LignePanier.objects.filter(nomCompte_id="VISITEUR").count()
-    if m.client:
-        nbr = models.LignePanier.objects.filter(nomCompte_id=m.client.compte).count()
-    return nbr
-
-def home(request):
-    nom = get_nom()
-    nbr = get_nbr()
-    return render(request, "home1.html", {"nom": nom, "nbr": nbr})
-
-
+# forms.ModeForm est la classe prédéfinie Django, on l'hérite pour creer notre propre classe de compteForm
 class CompteModelForm(forms.ModelForm):
 
     nomCompte = forms.CharField(min_length=4, label="Nom Compte")
@@ -60,7 +34,7 @@ class CompteModelForm(forms.ModelForm):
         txt_telephone = self.cleaned_data["telephone"]
         exists = models.CompteUser.objects.filter(telephone=txt_telephone).exists()
         if exists:
-            raise ValidationError("Numero de telephone deja existe")
+            raise ValidationError("Numero de téléphone déjà existant!")
 
         return txt_telephone
 
@@ -68,14 +42,14 @@ class CompteModelForm(forms.ModelForm):
         txt_nomCompte = self.cleaned_data["nomCompte"]
         exists = models.CompteUser.objects.filter(nomCompte=txt_nomCompte).exists()
         if exists:
-            raise ValidationError("Nom du compte deja existe")
+            raise ValidationError("Nom du compte déjà existant!")
         return txt_nomCompte
 
     def clean_courriel(self):
         txt_courriel = self.cleaned_data["courriel"]
         exists = models.CompteUser.objects.filter(courriel=txt_courriel).exists()
         if exists:
-            raise ValidationError("courriel deja existe")
+            raise ValidationError("courriel déjà existant!")
         return txt_courriel
  
     def clean_motDePasse(self):
@@ -90,8 +64,79 @@ class CompteModelForm(forms.ModelForm):
         txt_confirm_mdp = md5(self.cleaned_data["confirm_mdp"])
         # verifier si les mots de passe sont pareils
         if txt_confirm_mdp != txt_motDePasse:
-            raise ValidationError("mot de passe pas pareil")
+            raise ValidationError("Mot de passe n'est pas identique! ")
         return txt_confirm_mdp
+
+# on hérite CompteModelForm pour creer CompteModifier. Puis on surcharge les méthodes, pour qu'elles fonctionnent bien pendant qu'on modifie le compte
+class CompteModifier(CompteModelForm):
+
+# on doit pas changer nom du compte car il est une cle etrangere dans la base de donnee
+    nomCompte = forms.CharField(min_length=4, label="Nom Compte", disabled="disabled")
+# si on change pas le numero de telephone, le numero est dans notre base de donnee,
+# donc il faut surchareger la methode pour eviter le fausse alarme. Meme concepte pour les attributs suivants
+    def clean_telephone(self):
+        txt_telephone = self.cleaned_data["telephone"]
+        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(telephone=txt_telephone).exists()
+        if exists:
+            raise ValidationError("Numéro de téléphone déjà existant!")
+        return txt_telephone
+    def clean_nomCompte(self):
+        txt_nomCompte = self.cleaned_data["nomCompte"]
+        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(nomCompte=txt_nomCompte).exists()
+        if exists:
+            raise ValidationError("Nom du compte déjà existant!")
+        return txt_nomCompte
+    def clean_courriel(self):
+        txt_courriel = self.cleaned_data["courriel"]
+        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(courriel=txt_courriel).exists()
+        if exists:
+            raise ValidationError("Courriel déjà existant!")
+        return txt_courriel
+
+class AdresseModelForm(forms.ModelForm):
+    codePostale = forms.CharField(
+        label = "codePostale",
+    # code postal doit respecter format canadien
+        validators = [RegexValidator('[a-zA-Z][0-9][a-zA-Z][0-9][a-zA-Z][0-9]', 'code postale invalide')]
+    )
+    class Meta:
+        model = models.Adresse
+        fields = ('adresse', 'ville', 'codePostale', 'province',)
+
+
+class produitModelForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Produit
+        fields = "__all__"
+
+class inventaireModelForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Inventaire
+        fields = "__all__"
+
+# nav barre change selon le situation de compte connexion
+def get_nom():
+    nom = '<a href="/compte/login/">se connecter</a></span></li></ul>'
+    
+    if m.client:
+        nom = f'<img src="/static/imgs/connexion.png" alt="">{m.client.compte}</span></li><ul>\
+                <li><a href="/compte/info/">profile</a></li><li><a href="/compte/histoire/">mes commandes</a></li>\
+                <li><a href="/compte/deconnecter/">déconnection</a></li></ul></ul>'
+    nom = mark_safe(nom)
+    return nom
+
+def get_nbr():
+    nbr = models.LignePanier.objects.filter(nomCompte_id="VISITEUR").count()
+    if m.client:
+        nbr = models.LignePanier.objects.filter(nomCompte_id=m.client.compte).count()
+    return nbr
+
+def home(request):
+    nom = get_nom()
+    nbr = get_nbr()
+    return render(request, "home1.html", {"nom": nom, "nbr": nbr})
 
 def compte_creer(request):
 
@@ -108,59 +153,24 @@ def compte_creer(request):
     else:
         return render(request, "compte_creer.html", {"form":form})
 
-# class hirétage
-class CompteModifier(CompteModelForm):
-
-# on doit pas changer nom du compte car il est une cle etrangere dans la base de donnee
-    nomCompte = forms.CharField(min_length=4, label="Nom Compte", disabled="disabled")
-# si on change pas le numero de telephone, le numero est dans notre base de donnee,
-# donc il faut surchareger la methode pour eviter le fausse alarme. Meme concepte pour les attributs suivants
-    def clean_telephone(self):
-        txt_telephone = self.cleaned_data["telephone"]
-        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(telephone=txt_telephone).exists()
-        if exists:
-            raise ValidationError("Numero de telephone deja existe")
-        return txt_telephone
-    def clean_nomCompte(self):
-        txt_nomCompte = self.cleaned_data["nomCompte"]
-        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(nomCompte=txt_nomCompte).exists()
-        if exists:
-            raise ValidationError("Nom du compte deja existe")
-        return txt_nomCompte
-    def clean_courriel(self):
-        txt_courriel = self.cleaned_data["courriel"]
-        exists = models.CompteUser.objects.exclude(id=self.instance.pk).filter(courriel=txt_courriel).exists()
-        if exists:
-            raise ValidationError("courriel deja existe")
-        return txt_courriel
-
 
 def compte_modifer(request):
     nom = get_nom()
+    nbr = get_nbr()
     if not m.client:
         return redirect("home")
     else:
         row_obj = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
         if request.method == "GET":
             form = CompteModifier(instance=row_obj)
-            return render(request, "compte_modifier.html", {"form": form, "nom": nom})
+            return render(request, "compte_modifier.html", {"form": form, "nom": nom, "nbr": nbr})
 
         form = CompteModifier(data=request.POST, instance=row_obj) 
         if form.is_valid():
             form.save()
             return redirect("/compte/info/")
         else:
-            return render(request, "compte_modifier.html", {"form":form, "nom": nom})
-
-class AdresseModelForm(forms.ModelForm):
-    codePostale = forms.CharField(
-        label = "codePostale",
-    # code postal doit respecter format canadien
-        validators = [RegexValidator('[a-zA-Z][0-9][a-zA-Z][0-9][a-zA-Z][0-9]', 'code postale invalide')]
-    )
-    class Meta:
-        model = models.Adresse
-        fields = ('adresse', 'ville', 'codePostale', 'province',)
+            return render(request, "compte_modifier.html", {"form":form, "nom": nom, "nbr": nbr})
         
 def adresse_creer(request):
     nom = get_nom()
@@ -423,8 +433,17 @@ def recette(request):
     # si client changer la quantite, update la base de donnee
         if request.POST.get(str(ingredient.id)):
             quantite_n = int(request.POST.get(str(ingredient.id)))
-            models.LignePanier.objects.filter(idProduit=ingredient.id).update(quantite=quantite_n)
+            if quantite_n !=0:
+                if m.client:
+                    m.client.panier.ajouter(ingredient.id, quantite_n)
+                else:
+                    panier_visiteur.ajouter(ingredient.id, quantite_n)
+            # models.LignePanier.objects.filter(idProduit=ingredient.id).update(quantite=quantite_n)
     return redirect(f"/recette/?r={recette_choix}")
+
+m = Magasin()
+panier_visiteur = Panier("VISITEUR")
+recettes = ListeRecttes()
 
 """
 fonctions reservees pour l'administrateur
@@ -447,12 +466,6 @@ def produit_delete(request, nid):
     models.Produit.objects.filter(id=nid).delete()
     return redirect("/produit/liste")
 
-class produitModelForm(forms.ModelForm):
-
-    class Meta:
-        model = models.Produit
-        fields = "__all__"
-        
 def produit_edit(request, nid):
     row_obj = models.Produit.objects.filter(id=nid).first()
     if request.method == "GET":
@@ -473,11 +486,6 @@ def inventaire_delete(request, nid):
     models.Inventaire.objects.filter(id=nid).delete()
     return redirect("/inventaire/liste")
 
-class inventaireModelForm(forms.ModelForm):
-
-    class Meta:
-        model = models.Inventaire
-        fields = "__all__"
 
 def inventaire_edit(request, nid):
     row_obj = models.Inventaire.objects.filter(id=nid).first()
