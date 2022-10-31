@@ -1,7 +1,7 @@
 # Projet Final du cours de concept de programmation 2 et de Déveleppement Web
 
-Michaël Tremblay
-Xin Xu
+Michaël Tremblay\
+Xin Xu\
 Yimin Chemen
 
 # Nom
