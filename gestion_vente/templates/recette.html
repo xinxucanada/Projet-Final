@@ -8,9 +8,9 @@ Recette
         <div class="video">
             <script src="https://www.youtube.com/iframe_api"></script>
             <div id="player"></div>
+           
+            <!-- js code dans fichier html car il a besoin de variable {{video_id}} du Django, si dans un autre fichier .js, ça fonctionne plus -->
             <script>
-                let video_choix = document.querySelector("#recettes");
-
                 var player;
                 function onYouTubeIframeAPIReady() {
                 player = new YT.Player('player', {
@@ -28,11 +28,6 @@ Recette
                 function onPlayerReady(event) {
                 event.target.playVideo();
                 }
-                // video_choix.addEventListener('change', function(){
-                // player.loadVideoById(video_choix.value, 1, "large")
-                // onPlayerReady()
-                // }
-                // )
             </script>
         </div>
         <div class="autre">

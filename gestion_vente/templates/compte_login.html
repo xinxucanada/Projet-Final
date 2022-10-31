@@ -15,13 +15,7 @@ Se Connecter
                  <input type="password" name="pwd" id=""><br>
                  <span style="color: red;">{{ msg_error}}</span>
                </div>
-            <!-- {% for field in form %}
-            <div >
-               <label >{{field.label}}</label>
-                {{field}}
-                <span style="color: red;">{{field.errors.0}}</span>
-              </div>
-              {% endfor %}  -->
+            
               <button type="submit" class="btn">CREER</button>
           </form>
     </fieldset>
@@ -29,45 +23,6 @@ Se Connecter
 
 </div>
 {% endblock %}
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
-    bouvet/favicon/_/attachment/inline/dd170092-656a-4895-8550-daac0c4b0aa0:2df7625
-    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" >
-    <title>Se Connecter</title>
-    <style>
-        .login {
-            width: 300px;
-            height: 400px;
-            background-color: grey;
-            margin: 50px auto;
-        }
-    </style>
-  
-</head>
-<body>
-     -->
 
-    <!-- <div class="login">
-        
-        <form method="post" novalidate>
-            {% csrf_token %}
-          
-            <div >
-               <label >Nom du compte / Telephone/ Courriel</label>
-                <input type="text" name ="data_login"><br>
-                <label >Mot de passe</label><br>
-                <input type="password" name="pwd" id=""><br>
-                <span style="color: red;">{{ msg_error}}</span>
-              </div>
-             
-              <input type="submit" value="Conneter">
-          </form>
-    </div>
-    <div><a href="/compte/creer/">creer un compte</a></div> -->
 </body>
 </html>

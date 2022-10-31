@@ -3,79 +3,28 @@
 Amazonneuve
 {% endblock %}
 {% block content %}
-<div class="w"></div>
-{% endblock %}
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://market.enonic.com/vendors/
-    bouvet/favicon/_/attachment/inline/dd170092-656a-4895-8550-daac0c4b0aa0:2df7625
-    fb6fd508cb0874730d8f812d52670aff1/favicon_cleaned.svg" >
-    <title>Amazonneuve</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        div.nav {
-            height: 50px;
-            background-color:rgba(80, 80, 80, 0.5);
-
-        }
-        .connecter, .panier {
-            float: right;
-            /* height: 50px; */
-            line-height: 50px;
-            /* width: 100px; */
-            font-size: 30px;
-            text-decoration: none;
-            color: white;
-            margin-right: 30px;
-            /* background-color: pink; */
-        }
-        li {
-            list-style: none;
-        }
-        .connecter  ul {
-            font-size: 20px;
-            display: none;
-            background-color: grey;
-        }
-        .nav a {
-            color: white;
-            text-decoration: none;
-        }
-        .connecter img {
-            height: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="nav">
-        <span class="panier">
-            <a href="/compte/panier/">panier</a> 
-        </span>
-        <ul class="connecter">
-           <li><span>{{nom}}
-    </span>
-
+<link rel="stylesheet" href="/static/css/home.css">
+<div class="w">
+    <div class="img_roulant_container">
+        <ul>
+            <li>
+                <a href="#"><img  src="/static/imgs/recette1.jpg"></a>
+            </li>
+            <li>
+                <a href="#"><img  src="/static/imgs/recette2.jpg"></a>
+            </li>
+            <li>
+                <a href="#"><img  src="/static/imgs/recette3.jpg"></a>
+            </li>
+            <li>
+                <a href="#"><img  src="/static/imgs/recette4.jpg"></a>
+            </li>
+            
+        </ul>
+        <a href="javascript:;" class="arrow_l">&lt;</a>
+        <a href="javascript:;" class="arrow_r">&gt;</a>
+        <ol class="circle"></ol>
     </div>
-    <h1>Bienvenue</h1>
-    <h1><a href="/compte/shopping/">shopping</a></h1>
-
-
-    <script>
-        let connecter = document.querySelector(".connecter");
-        let ul = connecter.querySelector("ul");
-        connecter.onmouseover = function(){
-            ul.style.display = 'block';
-        }
-        connecter.onmouseout = function(){
-            ul.style.display = 'none';
-        }
-    </script>
-</body>
-</html> -->
+</div>
+<script src="/static/js/home.js"></script>
+{% endblock %}
