@@ -6,13 +6,13 @@ Compte Info
 <div class="userinfo w">
     <div class="profile">
         <dl>
-            <dt>nom du compte:</dt><dd>{{ profile.nomCompte }}</dd>
-            <dt>nom:</dt><dd>{{ profile.nom }}</dd>
-            <dt>prenom:</dt><dd>{{ profile.prenom }}</dd>
-            <dt>numero de telephone:</dt><dd>{{ profile.telephone }}</dd>
-            <dt>courriel:</dt><dd>{{ profile.courriel }}</dd>
-            <dt>date de naissance:</dt><dd>{{ profile.dateNaissance }}</dd>
-            <dt>sexe:</dt><dd>{{ profile.get_gender_display}}</dd>
+            <dt>Nom d'utilisateur':</dt><dd>{{ profile.nomCompte }}</dd>
+            <dt>Nom:</dt><dd>{{ profile.nom }}</dd>
+            <dt>Prénom:</dt><dd>{{ profile.prenom }}</dd>
+            <dt>Numéro de téléphone:</dt><dd>{{ profile.telephone }}</dd>
+            <dt>Courriel:</dt><dd>{{ profile.courriel }}</dd>
+            <dt>Date de naissance:</dt><dd>{{ profile.dateNaissance }}</dd>
+            <dt>Sexe:</dt><dd>{{ profile.get_gender_display}}</dd>
             <button><a href="/compte/modifier/">Modifier</a></button>
         </dl>
     </div>
@@ -23,7 +23,7 @@ Compte Info
                 <li>{{ a.adresse }}</li>
                 <li>{{ a.ville }}, {{ a.codePostale }}, {{ a.get_province_display }}</li>
                 <button><a href="/adresse/{{ a.id }}/modifier/">Modifier</a></button>
-                <a href="/adresse/{{ a.id }}/delete/">delete</a>
+                <a href="/adresse/{{ a.id }}/delete/">Supprimer</a>
             </ul>
         </div>
         {% endfor %}

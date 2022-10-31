@@ -7,11 +7,11 @@ compte panier
     <div class="left">
         <table >
             <thead>
-                <th colspan="2">produit</th>
-                <th>qty</th>
-                <th>prixUnitaire</th>
-                <th>subTotal</th>
-                <th>modifier</th>
+                <th colspan="2">Produit</th>
+                <th>Quantité</th>
+                <th>prix unitaire</th>
+                <th>Total</th>
+                <th>Modifier</th>
             </thead>
             
             <tbody>
@@ -24,7 +24,7 @@ compte panier
                     <td><input type="number" value="{{ line.2 }}" name="{{ line.1 }}"></td>
                     <td>{{ line.3 }}</td>
                     <td>{{ line.4 }}</td>
-                    <td><a href="/linge_panier/{{ line.5 }}/delete/">supprimer</a></td>
+                    <td><a href="/linge_panier/{{ line.5 }}/delete/">Supprimer</a></td>
                 </tr>
                 {% endfor %}
                <tr>
@@ -35,7 +35,7 @@ compte panier
         </table>
     </div>
     <div class="right">
-        <button><a href="/compte/commander/" >Allez a la caisse</a></button>
+        <button><a href="/compte/commander/" >Aller à la caisse</a></button>
     </div>
 
 </div>
