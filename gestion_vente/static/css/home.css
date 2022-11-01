@@ -62,5 +62,5 @@
     background-color: black;
 }
 body {
-    background: url('static/imgs/bg.jpg');
+    background: url('/static/imgs/bg.jpg');
 }
