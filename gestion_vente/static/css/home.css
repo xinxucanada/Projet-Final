@@ -61,3 +61,6 @@
 .current_circle {
     background-color: black;
 }
+.w {
+    background: url("/static/imgs/bg.jpg");
+}
