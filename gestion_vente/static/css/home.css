@@ -62,6 +62,5 @@
     background-color: black;
 }
 body {
-    background: url("/static/imgs/bg.jpg");
-    background-color: rgb(175, 124, 124);
+    background: url('static/imgs/bg.jpg');
 }
