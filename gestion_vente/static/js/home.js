@@ -85,14 +85,9 @@ var img_roulant_container = document.querySelector(".img_roulant_container ul");
                     });
                     circle_index++;
                     circle_index = circle_index == ol.children.length ? 0 : circle_index
-                    // if(circle_index == ol.children.length) {
-                    //     circle_index = 0;
-                    // }
+                   
                     circle_change()
-                    // for(var i = 0 ; i < ol.children.length; i++) {
-                    //     ol.children[i].className = "";
-                    // }
-                    // ol.children[circle_index].className = "current_circle" 
+                    
                 }
             })
             arrow_l.addEventListener("click", function(){
@@ -108,14 +103,9 @@ var img_roulant_container = document.querySelector(".img_roulant_container ul");
                     });
                     circle_index--;
                     circle_index = circle_index < 0? ol.children.length - 1 : circle_index;
-                    // if(circle_index < 0) {
-                    //     circle_index = ol.children.length - 1;
-                    // }
+                    
                     circle_change()
-                    // for(var i = 0 ; i < ol.children.length; i++) {
-                    //     ol.children[i].className = "";
-                    // }
-                    // ol.children[circle_index].className = "current_circle"
+                    
                 }
             })
             var timer_auto_rouler = setInterval(function() {

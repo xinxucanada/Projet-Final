@@ -98,14 +98,6 @@ r.preparation = mark_safe("<ol>"\
                     "<li>Ajoutez-les dans la poêle, enrobez-les de sauce et poursuivez la cuisson 2 minutes.</li><br>"\
                     "<li>Poivrez généreusement.</li><br>"\
                 "</ol>")
-                # \
-                # "<ul>"   \
-                #     "<li>400g Pâtes de type rigatoni</li>"\
-                #     "<li>160g Pecorino</li>"\
-                #     "<li>28g Sel</li>"\
-                #     "<li>Poivre</li>"\
-                # "</ul>")
-
 
 o = Recette()
 o.nom = "Oeuf cocotte"

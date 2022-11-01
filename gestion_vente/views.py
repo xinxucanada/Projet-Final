@@ -25,7 +25,6 @@ class CompteModelForm(forms.ModelForm):
         widgets = {
             # change input type a password
             "motDePasse": forms.PasswordInput(), 
-            # "confirm_mdp": forms.PasswordInput(attrs={"type": "password"}),
             "dateNaissance": forms.DateInput(attrs={"type": "date"}),
         }
 
@@ -226,7 +225,7 @@ def compte_login(request):
     else:
         msg_error = 'Compte n\'existe pas!!'
         return render(request, 'compte_login.html', {"msg_error": msg_error, "nbr": nbr})
-    pwd = request.POST.get('pwd') 
+    pwd = md5(request.POST.get('pwd')) 
     if pwd == models.CompteUser.objects.filter(nomCompte=nom_compte).first().motDePasse:
 # creer objet client par fonction login
         m.login(nom_compte)
@@ -252,7 +251,6 @@ def compte_info(request):
     return render(request, "compte_info.html", {"nom": nom, "nbr": nbr, "profile": profile, "adresses":adresses})
 
 def compte_histoire(request):
-    # models.Commande.objects.filter(id__lte=3).delete()
     if not m.client:
         return redirect("/compte/login/")
     nom = get_nom()
@@ -292,12 +290,11 @@ def compte_panier(request):
     data_dict = {}
     # mettre toutes les conditions dans un dico, comme nom du compte
     data_dict["nomCompte"] = m.client.compte if m.client else "VISITEUR"
-    # liste = models.LignePanier.objects.filter(**data_dict)
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     liste = []
     montant = 0
     for obj in liste_panier:
-        # avec 'foreignKey' fonctin, on peut avoir lienPhoto et prixUnitair
+        # avec 'foreignKey' fonction, on peut avoir lienPhoto et prixUnitair
         photo = mark_safe(f'<img src="{obj.idProduit.lienPhoto}" alt="" style="width:20px;height:20px;">')
         line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite * obj.idProduit.prixUnitair, obj.id]
         liste.append(line)
@@ -323,12 +320,12 @@ def compte_commander(request):
     if not m.client:
         return redirect("/compte/login/")
     nom = get_nom()
+    nbr = get_nbr()
     data_dict = {}
     data_dict["nomCompte"] = m.client.compte
     liste_panier = models.LignePanier.objects.filter(**data_dict)
     m.commande_liste = []
     m.commande_montant = 0
-    # m.message = ""
     profile = models.CompteUser.objects.filter(nomCompte=m.client.compte).first()
     adresses = models.Adresse.objects.filter(Compte_id=profile.id)
     # puisque la base de donnee 'ligne panier n'a pas d'attributs photo, prix, subtotal et montant total no plus'
@@ -339,7 +336,7 @@ def compte_commander(request):
         line = [photo, obj.idProduit, obj.quantite, obj.idProduit.prixUnitair, obj.quantite*obj.idProduit.prixUnitair]
         m.commande_liste.append(line)
         m.commande_montant += obj.quantite*obj.idProduit.prixUnitair
-    return render(request, "compte_commander.html", {"liste": m.commande_liste, "nom": nom, "montant": m.commande_montant, "adresses": adresses, "message": m.message})
+    return render(request, "compte_commander.html", {"liste": m.commande_liste, "nom": nom, "montant": m.commande_montant, "adresses": adresses, "message": m.message, "nbr": nbr})
 
 def compte_caisse(request):
     # si le client ne choisit pas d'adresse, on affiche un message d'error
@@ -440,7 +437,6 @@ def recette(request):
                     m.client.panier.ajouter(ingredient.id, quantite_n)
                 else:
                     panier_visiteur.ajouter(ingredient.id, quantite_n)
-            # models.LignePanier.objects.filter(idProduit=ingredient.id).update(quantite=quantite_n)
     return redirect(f"/recette/?r={recette_choix}")
 
 m = Magasin()
