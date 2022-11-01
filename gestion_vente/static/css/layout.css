@@ -14,7 +14,11 @@
     background-color:rgba(80, 80, 80, 0.5);
 
 } */
-
+.nav .shopping h1 a span {
+    position: relative;
+    top : -10px;
+    font-size: 20px;
+}
 
 .w {
     width: 1200px;
