@@ -162,6 +162,11 @@ li {
 .nav a {
     color: white;
     text-decoration: none;
+    display: inline-block;
+    height: 50px;
+    line-height: 50px;
+    font-size: 30px;
+
 }
 .connecter img {
     height: 20px;
@@ -213,7 +218,7 @@ div.commander {
 }
 .profile {
     float: left;
-    width: 300px;
+    width: 250px;
     background-color: rgb(192, 177, 177);
     border-radius: 20px;
     margin-top: 30px;

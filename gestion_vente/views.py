@@ -93,6 +93,7 @@ class CompteModifier(CompteModelForm):
             raise ValidationError("Courriel déjà existant!")
         return txt_courriel
 
+
 class AdresseModelForm(forms.ModelForm):
     codePostale = forms.CharField(
         label = "codePostale",
@@ -109,6 +110,7 @@ class produitModelForm(forms.ModelForm):
     class Meta:
         model = models.Produit
         fields = "__all__"
+
 
 class inventaireModelForm(forms.ModelForm):
 
