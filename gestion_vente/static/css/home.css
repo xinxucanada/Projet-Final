@@ -46,7 +46,8 @@
 .circle {
     position: absolute;
     bottom: 10px;
-    left: 130px;
+    left: 50%;
+    margin-left: -80px;
 }
 .circle li {
     float: left;
