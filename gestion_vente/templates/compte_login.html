@@ -15,7 +15,18 @@ Se Connecter
                  <input type="password" name="pwd" id=""><br>
                  <span style="color: red;">{{ msg_error}}</span>
                </div>
-            
+               <!-- <div class="form-group">
+                <label for="id_code">图片验证码</label>
+                <div class="row">
+                    <div class="col-xs-7">
+                        {{ form.code }}
+                        <span style="color: red;">{{ form.code.errors.0 }}</span>
+                    </div>
+                    <div class="col-xs-5">
+                        <img id="image_code" src="/image/code/" style="width: 125px;">
+                    </div>
+                </div>
+            </div> -->
               <button type="submit" class="btn">continuer</button>
           </form>
     </fieldset>

@@ -210,6 +210,16 @@ def adresse_modifier(request, nid):
         else:
             return render(request, "adresse_modifier.html", {"form":form, "nom": nom, "nbr": nbr})
 
+# from gestion_vente.code import check_code
+# from io import BytesIO
+
+# def image_code(request):
+#     img, code_str = check_code()
+#     stream = BytesIO()
+#     img.save(stream, 'png')
+#     return HttpResponse(stream.getvalue())
+
+
 def compte_login(request):
     nbr = get_nbr()
     if request.method == "GET":
