@@ -28,7 +28,7 @@ urlpatterns = [
     path("compte/modifier/", views.compte_modifer, name="compte__modifer"),
     path("commande/<int:nid>/recommande/", views.recommander, name="recommander"),
     path("recette/", views.recette, name="recette"),
-    path("image/code/", views.image_code, name="image_code"),
+    # path("image/code/", views.image_code, name="image_code"),
 
 
 
