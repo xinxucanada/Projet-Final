@@ -1,5 +1,4 @@
-# Projet Final du cours de concept de programmation 2 et de Déveleppement Web
-
+# Projet t de programmation et de Déveleppement Web
 
 ## Nom
 Épicerie en ligne sous le nom de Amazonneuve
@@ -16,9 +15,7 @@ Pour installer Django, si ce n'est pas déjà fait, vous devez exécuter ce code
 
 ## Auteur
 
-Michaël Tremblay\
-Xin Xu\
-Yimin Chemen
+Xin Xu
 
 ## Support 
 Pour nous rejoindre, voux pouvez nous écrire à l'adresse suivante: e2194517@cmaisonneuve.qc.ca
